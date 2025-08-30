@@ -1,4 +1,4 @@
-<p align="center"><a target="_blank"><img src="Lumina_ICON_SVG.svg" width="400" alt="Lumina Logo"></a></p>
+<p align="center"><a target="_blank"><img src="lumina-logo.png" width="400" alt="Lumina Logo"></a></p>
 
 
 ## About Lumina
