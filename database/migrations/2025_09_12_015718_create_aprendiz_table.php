@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('usuarios', function (Blueprint $table) {
+        Schema::create('aprendiz', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->unique();
             $table->string('nombre');
             $table->string('apellido');
             $table->string('tipo_documento');
@@ -20,7 +21,7 @@ return new class extends Migration
             $table->integer('edad');
             $table->string('numero_telefono');
             $table->text('path_foto');
-            $table->string('rol');
+            $table->string('entidad'); //entidad que ingresa el sistema (aprendiz, docente, etc...)
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('usuarios');
+        Schema::dropIfExists('aprendiz');
     }
 };

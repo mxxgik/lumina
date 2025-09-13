@@ -4,16 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UsuariosEquipos extends Model
+class AprendizEquipos extends Model
 {
-    protected $table = 'usuarios_equipos';
+    protected $table = 'aprendiz_equipos';
     protected $fillable = [
-        'usuarios_id',
+        'aprendiz_id',
         'equipos_o_elementos_id',
     ];
 
-    public function usuarios(){
-        return $this->belongsTo(Usuarios::class);
+    public function aprendiz(){
+        return $this->belongsTo(Aprendiz::class);
     }
 
     public function equipos(){

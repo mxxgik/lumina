@@ -8,7 +8,7 @@ class Formacion extends Model
 {
     protected $table = 'formacion';
     protected $fillable = [
-        'usuarios_id',
+        'aprendiz_id',
         'tipos_programas_id',
         'ficha',
         'nombre_programa',
@@ -19,7 +19,7 @@ class Formacion extends Model
         return $this->belongsTo(TiposProgramas::class);
     }
 
-    public function usuarios(){
-        return $this->belongsTo(Usuarios::class);
+    public function aprendiz(){
+        return $this->belongsTo(Aprendiz::class);
     }
 }

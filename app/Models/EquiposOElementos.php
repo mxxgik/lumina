@@ -20,18 +20,18 @@ class EquiposOElementos extends Model
         return $this->hasMany(Historial::class, 'equipos_o_elementos_id');
     }
 
-    public function usuariosEquipos()
+    public function aprendizEquipos()
     {
-        return $this->hasMany(UsuariosEquipos::class);
+        return $this->hasMany(AprendizEquipos::class);
     }
 
-    public function usuarios()
+    public function aprendiz()
     {
         return $this->belongsToMany(
-            Usuarios::class,
-            'usuarios_equipos',
+            aprendiz::class,
+            'aprendiz_equipos',
             'equipos_o_elementos_id',
-            'usuarios_id'
+            'aprendiz_id'
         );
     }
 }

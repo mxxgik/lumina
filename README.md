@@ -13,7 +13,7 @@ Lumina es un sistema de gestion para la entrada y salida de equipos.
 Todos los enpoints listados a continuacion se encuentran bajo el subdirectorio /api/ y entrgan como respuesta ya sea un unico objeto JSON o un arreglo de objetos JSON.
 
 ## Generales
-Los endpoints generales son aquellos que estan disponibles para todos los usuarios de la aplicacion.
+Los endpoints generales son aquellos que estan disponibles para todos los aprendiz de la aplicacion.
  
 GET ```/listUsers``` => Obtener todos los ususarios.  
 

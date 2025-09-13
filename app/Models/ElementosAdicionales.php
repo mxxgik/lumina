@@ -11,29 +11,28 @@ class ElementosAdicionales extends Model
         'tipos_elementos_adicionales',
         'nombre_elemento_adicionales',
     ];
-    public function elementos_adicionales_usuarios(){
-        return $this->hasMany(ElementosAdicionalesUsuarios::class);
+    public function elementos_adicionales_aprendiz(){
+        return $this->hasMany(ElementosAdicionalesAprendiz::class);
     }
-    // ... existing code ...
     public function historial()
     {
         return $this->hasManyThrough(
             Historial::class,
-            ElementosAdicionalesUsuarios::class,
+            ElementosAdicionalesAprendiz::class,
             'elementos_adicionales_id',
-            'elementos_adicionales_usuarios_id',
+            'elementos_adicionales_aprendiz_id',
             'id',
             'id'
         );
     }
 
-    public function usuarios()
+    public function aprendiz()
     {
         return $this->belongsToMany(
-            Usuarios::class,
-            'elementos_adicionales_usuarios',
+            aprendiz::class,
+            'elementos_adicionales_aprendiz',
             'elementos_adicionales_id',
-            'usuarios_id'
+            'aprendiz_id'
         );
     }
 }

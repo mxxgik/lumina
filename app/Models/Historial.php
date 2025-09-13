@@ -8,9 +8,9 @@ class Historial extends Model
 {
     protected $table = 'historial';
     protected $fillable = [
-        'usuarios_id',
+        'aprendiz_id',
         'equipos_o_elementos_id',
-        'elementos_adicionales_usuarios_id',
+        'elementos_adicionales_aprendiz_id',
         'fecha',
         'hora_ingreso',
         'hora_salida',
@@ -18,7 +18,7 @@ class Historial extends Model
 
     public function usuario()
     {
-        return $this->belongsTo(Usuarios::class);
+        return $this->belongsTo(Aprendiz::class);
     }
 
     public function equipoOElemento()
@@ -28,6 +28,6 @@ class Historial extends Model
 
     public function elementoAdicional()
     {
-        return $this->belongsTo(ElementosAdicionalesUsuarios::class, 'elementos_adicionales_usuarios_id');
+        return $this->belongsTo(ElementosAdicionalesAprendiz::class, 'elementos_adicionales_aprendiz_id');
     }
 }

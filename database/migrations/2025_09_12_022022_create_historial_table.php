@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('historial', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('usuarios_id')->constrained('usuarios')->onDelete('cascade');
+            $table->foreignId('aprendiz_id')->constrained('aprendiz')->onDelete('cascade');
             $table->foreignId('equipos_o_elementos_id')->constrained('equipos_o_elementos')->onDelete('cascade');
-            $table->foreignId('elementos_adicionales_usuarios_id')->constrained('elementos_adicionales_usuarios')->onDelete('cascade');
+            $table->foreignId('elementos_adicionales_aprendiz_id')->constrained('elementos_adicionales_aprendiz')->onDelete('cascade');
             $table->date('fecha');
             $table->time('hora_ingreso');
             $table->time('hora_salida');

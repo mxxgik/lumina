@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Usuarios extends Model
+class Aprendiz extends Model
 {
-    protected $table = 'usuarios';
+    protected $table = 'aprendiz';
     protected $fillable = [
+        'user_id',
         'nombre',
         'apellido',
         'tipo_documento',
@@ -18,26 +19,31 @@ class Usuarios extends Model
         'rol'
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     public function formacion(){
         return $this->hasMany(Formacion::class);
     }
 
-    public function usuariosEquipos()
+    public function aprendizEquipos()
     {
-        return $this->hasMany(UsuariosEquipos::class);
+        return $this->hasMany(AprendizEquipos::class);
     }
 
     public function historial()
     {
-        return $this->hasMany(Historial::class, 'usuarios_id');
+        return $this->hasMany(Historial::class, 'aprendiz_id');
     }
 
     public function equipos()
     {
         return $this->belongsToMany(
             EquiposOElementos::class,
-            'usuarios_equipos',
-            'usuarios_id',
+            'aprendiz_equipos',
+            'aprendiz_id',
             'equipos_o_elementos_id'
         );
     }
@@ -46,8 +52,8 @@ class Usuarios extends Model
     {
         return $this->belongsToMany(
             ElementosAdicionales::class,
-            'elementos_adicionales_usuarios',
-            'usuarios_id',
+            'elementos_adicionales_aprendiz',
+            'aprendiz_id',
             'elementos_adicionales_id'
         );
     }
