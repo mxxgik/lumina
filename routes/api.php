@@ -9,3 +9,10 @@ Route::post("login", [AuthController::class, "login"])->name("login");
 
 //Route to register new users MOBILE ONLY
 Route::post("register", [AuthController::class, "register"])->name("register");
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    //TODO: agregar roles
+    Route::prefix('admin')->group(function () {});
+    Route::prefix('celador')->group(function () {});
+    Route::prefix('aprendiz')->group(function () {});
+});
