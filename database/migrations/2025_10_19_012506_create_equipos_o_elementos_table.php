@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('equipos_o_elementos', function (Blueprint $table) {
             $table->id();
-            $table->string('sn_equipo');
-            $table->string('marca');
-            $table->string('color');
-            $table->string('tipo_elemento');
-            $table->string('path_qr');
-            $table->timestamps();
+            $table->string('sn_equipo', 100)->nullable();
+            $table->string('marca', 100)->nullable();
+            $table->string('color', 100)->nullable();
+            $table->string('tipo_elemento', 100)->nullable();
+            $table->text('descripcion')->nullable();
+            $table->string('path_qr')->nullable();
+            $table->text('path_foto_equipo_implemento')->nullable();
         });
     }
 

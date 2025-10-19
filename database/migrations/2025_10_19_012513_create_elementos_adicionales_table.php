@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tipos_programas', function (Blueprint $table) {
+        Schema::create('elementos_adicionales', function (Blueprint $table) {
             $table->id();
-            $table->string('nivel_formacion'); //tecnologo, tecnico, etc...
-            $table->timestamps();
+            $table->string('tipo_elemento', 100)->nullable();
+            $table->string('nombre_elemento', 100)->nullable();
+            $table->text('path_foto_elemento')->nullable();
         });
     }
 
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tipos_programas');
+        Schema::dropIfExists('elementos_adicionales');
     }
 };

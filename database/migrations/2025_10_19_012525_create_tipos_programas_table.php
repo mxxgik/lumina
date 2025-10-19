@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('historial', function (Blueprint $table) {
-            $table->time('hora_salida')->nullable()->change();
+        Schema::create('tipos_programas', function (Blueprint $table) {
+            $table->id();
+            $table->string('nivel_formacion', 100)->nullable();
         });
     }
 
@@ -21,8 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('historial', function (Blueprint $table) {
-            $table->time('hora_salida')->nullable(false)->change();
-        });
+        Schema::dropIfExists('tipos_programas');
     }
 };

@@ -11,15 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('formacion', function (Blueprint $table) {
+        Schema::create('aprendiz_elementos_adicionales', function (Blueprint $table) {
             $table->id();
             $table->foreignId('aprendiz_id')->constrained('aprendiz')->onDelete('cascade');
-            $table->foreignId('tipos_programas_id')->constrained('tipos_programas')->onDelete('cascade');
-            $table->string('ficha');
-            $table->string('nombre_programa');
-            $table->date('fecha_inicio_programa');
-            $table->date('fecha_fin_programa');
-            $table->timestamps();
+            $table->foreignId('elementos_adicionales_id')->constrained('elementos_adicionales')->onDelete('cascade');
+            
+            $table->unique(['aprendiz_id', 'elementos_adicionales_id'], 'unique_aprendiz_elemento_adicional');
         });
     }
 
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('formacion');
+        Schema::dropIfExists('aprendiz_elementos_adicionales');
     }
 };

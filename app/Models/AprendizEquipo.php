@@ -3,16 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class Historial extends Model
+class AprendizEquipo extends Pivot
 {
     use HasFactory;
 
     /**
      * The table associated with the model.
      */
-    protected $table = 'historial';
+    protected $table = 'aprendiz_equipos';
 
     /**
      * The attributes that are mass assignable.
@@ -20,16 +20,6 @@ class Historial extends Model
     protected $fillable = [
         'aprendiz_id',
         'equipos_o_elementos_id',
-        'ingreso',
-        'salida',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     */
-    protected $casts = [
-        'ingreso' => 'datetime',
-        'salida' => 'datetime',
     ];
 
     /**
@@ -38,7 +28,7 @@ class Historial extends Model
     public $timestamps = false;
 
     /**
-     * Get the aprendiz that owns the historial.
+     * Get the aprendiz that owns the pivot.
      */
     public function aprendiz()
     {
@@ -46,18 +36,10 @@ class Historial extends Model
     }
 
     /**
-     * Get the equipo that owns the historial.
+     * Get the equipo that owns the pivot.
      */
     public function equipo()
     {
         return $this->belongsTo(EquipoOElemento::class, 'equipos_o_elementos_id');
-    }
-
-    /**
-     * Get the historial elementos adicionales for the historial.
-     */
-    public function historialElementosAdicionales()
-    {
-        return $this->hasMany(HistorialElementoAdicional::class);
     }
 }

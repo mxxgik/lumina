@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class HistorialController
+class ElementoAdicionalController
 {
     /**
      * Display a listing of the resource.

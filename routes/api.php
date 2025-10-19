@@ -13,6 +13,6 @@ Route::post("register", [AuthController::class, "register"])->name("register");
 Route::middleware(['auth:sanctum'])->group(function () {
     //TODO: agregar roles
     Route::prefix('admin')->group(function () {});
-    Route::prefix('celador')->group(function () {});
+    Route::prefix('portero')->group(function () {});
     Route::prefix('aprendiz')->group(function () {});
 });
