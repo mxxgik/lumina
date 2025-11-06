@@ -2,76 +2,76 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Historial;
-use Illuminate\Http\Request;
 use App\Models\HistorialElementoAdicional;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class HistorialElementoAdicionalController
 {
     public function index()
     {
-        $AdditElementHistory = HistorialElementoAdicional::all();
-        return response()->json(['success' => true, 'data' => $AdditElementHistory], 200);
+        $historialEntradas = HistorialElementoAdicional::all();
+        return response()->json(['success' => true, 'data' => $historialEntradas], 200);
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'historial_id' => 'required|string',
-            'aprendiz_elemento_adicional_id' => 'required|string'
+            'historial_id' => 'required|integer|exists:historial,id',
+            'aprendiz_elemento_adicional_id' => 'required|integer|exists:aprendiz_elementos_adicionales,id'
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'error' => $validator->errors()]);
+            return response()->json(['success' => false, 'error' => $validator->errors()], 400);
         }
 
-        $AdditElementEntrance = HistorialElementoAdicional::create($validator->validated());
+        $historialEntrada = HistorialElementoAdicional::create($validator->validated());
 
-        return response()->json(['success' => true, 'data' => $AdditElementEntrance], 200);
+        return response()->json(['success' => true, 'data' => $historialEntrada], 201);
     }
 
     public function show(string $id)
     {
-        $AdditElementEntrace = HistorialElementoAdicional::where('id', $id);
+        $historialEntrada = HistorialElementoAdicional::find($id);
 
-        if (!$AdditElementEntrace) {
-            return response()->json(['success' => false, 'message' => 'Entrada en el historial no encontrado'], 400);
+        if (!$historialEntrada) {
+            return response()->json(['success' => false, 'message' => 'Entrada en el historial no encontrada'], 404);
         }
 
-        return response()->json(['success' => true, 'data' => $AdditElementEntrace], 200);
+        return response()->json(['success' => true, 'data' => $historialEntrada], 200);
     }
 
     public function update(Request $request, string $id)
     {
-        $AdditElementEntrace = HistorialElementoAdicional::where('id', $id);
+        $historialEntrada = HistorialElementoAdicional::find($id);
 
-        if (!$AdditElementEntrace) {
-            return response()->json(['success' => false, 'message' => 'Entrada en el historial no encontrada'], 400);
+        if (!$historialEntrada) {
+            return response()->json(['success' => false, 'message' => 'Entrada en el historial no encontrada'], 404);
         }
 
         $validator = Validator::make($request->all(), [
-            'nivel_formacion' => 'required|string'
+            'historial_id' => 'sometimes|integer|exists:historial,id',
+            'aprendiz_elemento_adicional_id' => 'sometimes|integer|exists:aprendiz_elementos_adicionales,id'
         ]);
 
         if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->errors()], 400);
         }
 
-        $AdditElementEntrace->update($validator->validated());
+        $historialEntrada->update($validator->validated());
 
-        return response()->json(['success' => true, 'data' => $AdditElementEntrace], 200);
+        return response()->json(['success' => true, 'data' => $historialEntrada], 200);
     }
 
     public function destroy(string $id)
     {
-        $AdditElementEntrace = HistorialElementoAdicional::where('id', $id);
+        $historialEntrada = HistorialElementoAdicional::find($id);
 
-        if (!$AdditElementEntrace) {
-            return response()->json(['success' => false, 'message' => 'Entrada en el historial no encontrada'], 400);
+        if (!$historialEntrada) {
+            return response()->json(['success' => false, 'message' => 'Entrada en el historial no encontrada'], 404);
         }
 
-        $AdditElementEntrace->delete();
+        $historialEntrada->delete();
 
         return response()->json(['success' => true, 'message' => 'La entrada en el historial correspondiente al id: ' . $id . ' fue eliminada correctamente'], 200);
     }
