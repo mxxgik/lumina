@@ -18,8 +18,7 @@ class Formacion extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'aprendiz_id',
-        'tipos_programas_id',
+        'nivel_formacion_id',
         'ficha',
         'nombre_programa',
         'fecha_inicio_programa',
@@ -40,18 +39,18 @@ class Formacion extends Model
     public $timestamps = false;
 
     /**
-     * Get the aprendiz that owns the formacion.
+     * Get the nivel formacion that owns the formacion.
      */
-    public function aprendiz()
+    public function nivelFormacion()
     {
-        return $this->belongsTo(Aprendiz::class);
+        return $this->belongsTo(NivelFormacion::class, 'nivel_formacion_id');
     }
 
     /**
-     * Get the tipo programa that owns the formacion.
+     * Get the users for the formacion.
      */
-    public function tipoPrograma()
+    public function usuarios()
     {
-        return $this->belongsTo(TipoPrograma::class, 'tipos_programas_id');
+        return $this->hasMany(User::class, 'formacion_id');
     }
 }

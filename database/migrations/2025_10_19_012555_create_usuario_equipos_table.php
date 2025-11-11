@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('elementos_adicionales', function (Blueprint $table) {
+        Schema::create('usuario_equipos', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre_elemento', 100)->nullable();
-            $table->text('path_foto_elemento')->nullable();
+            $table->foreignId('usuario_id')->constrained('usuarios')->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('equipos_o_elementos_id')->constrained('equipos_o_elementos')->onDelete('cascade')->onUpdate('cascade');
+            
+            $table->unique(['usuario_id', 'equipos_o_elementos_id'], 'unique_usuario_equipo');
         });
     }
 
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('elementos_adicionales');
+        Schema::dropIfExists('usuario_equipos');
     }
 };

@@ -18,7 +18,7 @@ class Historial extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'aprendiz_id',
+        'usuario_id',
         'equipos_o_elementos_id',
         'ingreso',
         'salida',
@@ -38,11 +38,11 @@ class Historial extends Model
     public $timestamps = false;
 
     /**
-     * Get the aprendiz that owns the historial.
+     * Get the usuario that owns the historial.
      */
-    public function aprendiz()
+    public function usuario()
     {
-        return $this->belongsTo(Aprendiz::class);
+        return $this->belongsTo(User::class, 'usuario_id');
     }
 
     /**
@@ -51,13 +51,5 @@ class Historial extends Model
     public function equipo()
     {
         return $this->belongsTo(EquipoOElemento::class, 'equipos_o_elementos_id');
-    }
-
-    /**
-     * Get the historial elementos adicionales for the historial.
-     */
-    public function historialElementosAdicionales()
-    {
-        return $this->hasMany(HistorialElementoAdicional::class);
     }
 }

@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('color', 100)->nullable();
             $table->string('tipo_elemento', 100)->nullable();
             $table->text('descripcion')->nullable();
-            $table->string('path_qr')->nullable();
-            $table->text('path_foto_equipo_implemento')->nullable();
+            $table->string('qr_hash', 255)->nullable();
+            $table->text('path_foto_equipo_implemento');
         });
     }
 

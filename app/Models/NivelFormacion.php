@@ -5,22 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ElementoAdicional extends Model
+class NivelFormacion extends Model
 {
     use HasFactory;
 
     /**
      * The table associated with the model.
      */
-    protected $table = 'elementos_adicionales';
+    protected $table = 'nivel_formacion';
 
     /**
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'nombre_elemento',
-        'path_foto_elemento',
-        'equipos_o_elementos_id',
+        'nivel_formacion',
     ];
 
     /**
@@ -29,10 +27,10 @@ class ElementoAdicional extends Model
     public $timestamps = false;
 
     /**
-     * Get the equipo that owns the elemento adicional.
+     * Get the formaciones for the nivel formacion.
      */
-    public function equipo()
+    public function formaciones()
     {
-        return $this->belongsTo(EquipoOElemento::class, 'equipos_o_elementos_id');
+        return $this->hasMany(Formacion::class, 'nivel_formacion_id');
     }
 }

@@ -5,20 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TipoPrograma extends Model
+class Role extends Model
 {
     use HasFactory;
 
     /**
      * The table associated with the model.
      */
-    protected $table = 'tipos_programas';
+    protected $table = 'roles';
 
     /**
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'nivel_formacion',
+        'nombre_rol',
     ];
 
     /**
@@ -27,10 +27,10 @@ class TipoPrograma extends Model
     public $timestamps = false;
 
     /**
-     * Get the formaciones for the tipo programa.
+     * Get the users for the role.
      */
-    public function formaciones()
+    public function usuarios()
     {
-        return $this->hasMany(Formacion::class, 'tipos_programas_id');
+        return $this->hasMany(User::class, 'role_id');
     }
 }

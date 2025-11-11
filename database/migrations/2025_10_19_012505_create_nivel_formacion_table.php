@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tipos_programas', function (Blueprint $table) {
+        Schema::create('nivel_formacion', function (Blueprint $table) {
             $table->id();
             $table->string('nivel_formacion', 100)->nullable();
         });
@@ -22,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tipos_programas');
+        Schema::dropIfExists('nivel_formacion');
     }
 };

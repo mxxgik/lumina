@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('formacion', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('aprendiz_id')->constrained('aprendiz')->onDelete('cascade');
-            $table->foreignId('tipos_programas_id')->constrained('tipos_programas')->onDelete('cascade');
+            $table->foreignId('nivel_formacion_id')->constrained('nivel_formacion')->onDelete('cascade')->onUpdate('cascade');
             $table->string('ficha')->nullable();
             $table->string('nombre_programa')->nullable();
             $table->date('fecha_inicio_programa')->nullable();

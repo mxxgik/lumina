@@ -23,7 +23,7 @@ class EquipoOElemento extends Model
         'color',
         'tipo_elemento',
         'descripcion',
-        'path_qr',
+        'qr_hash',
         'path_foto_equipo_implemento',
     ];
 
@@ -33,11 +33,11 @@ class EquipoOElemento extends Model
     public $timestamps = false;
 
     /**
-     * The aprendices that belong to the equipo.
+     * The usuarios that belong to the equipo.
      */
-    public function aprendices()
+    public function usuarios()
     {
-        return $this->belongsToMany(Aprendiz::class, 'aprendiz_equipos', 'equipos_o_elementos_id', 'aprendiz_id');
+        return $this->belongsToMany(User::class, 'usuario_equipos', 'equipos_o_elementos_id', 'usuario_id');
     }
 
     /**
@@ -46,5 +46,13 @@ class EquipoOElemento extends Model
     public function historiales()
     {
         return $this->hasMany(Historial::class, 'equipos_o_elementos_id');
+    }
+
+    /**
+     * Get the elementos adicionales for the equipo.
+     */
+    public function elementosAdicionales()
+    {
+        return $this->hasMany(ElementoAdicional::class, 'equipos_o_elementos_id');
     }
 }

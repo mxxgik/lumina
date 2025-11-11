@@ -5,20 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class AprendizEquipo extends Pivot
+class UsuarioEquipo extends Pivot
 {
     use HasFactory;
 
     /**
      * The table associated with the model.
      */
-    protected $table = 'aprendiz_equipos';
+    protected $table = 'usuario_equipos';
 
     /**
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'aprendiz_id',
+        'usuario_id',
         'equipos_o_elementos_id',
     ];
 
@@ -28,11 +28,11 @@ class AprendizEquipo extends Pivot
     public $timestamps = false;
 
     /**
-     * Get the aprendiz that owns the pivot.
+     * Get the usuario that owns the pivot.
      */
-    public function aprendiz()
+    public function usuario()
     {
-        return $this->belongsTo(Aprendiz::class);
+        return $this->belongsTo(User::class, 'usuario_id');
     }
 
     /**

@@ -12,12 +12,25 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
+     * The table associated with the model.
+     */
+    protected $table = 'usuarios';
+
+    /**
      * The attributes that are mass assignable.
      */
     protected $fillable = [
+        'role_id',
+        'formacion_id',
+        'nombre',
+        'apellido',
+        'tipo_documento',
+        'documento',
+        'edad',
+        'numero_telefono',
+        'path_foto',
         'email',
         'password',
-        'role',
     ];
 
     /**
@@ -33,6 +46,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'password' => 'hashed',
+        'edad' => 'integer',
     ];
 
     /**
@@ -41,10 +55,34 @@ class User extends Authenticatable
     public $timestamps = false;
 
     /**
-     * Get the aprendiz associated with the user.
+     * Get the role that owns the user.
      */
-    public function aprendiz()
+    public function role()
     {
-        return $this->hasOne(Aprendiz::class);
+        return $this->belongsTo(Role::class);
+    }
+
+    /**
+     * Get the formacion that owns the user.
+     */
+    public function formacion()
+    {
+        return $this->belongsTo(Formacion::class);
+    }
+
+    /**
+     * The equipos that belong to the user.
+     */
+    public function equipos()
+    {
+        return $this->belongsToMany(EquipoOElemento::class, 'usuario_equipos', 'usuario_id', 'equipos_o_elementos_id');
+    }
+
+    /**
+     * Get the historial for the user.
+     */
+    public function historiales()
+    {
+        return $this->hasMany(Historial::class, 'usuario_id');
     }
 }

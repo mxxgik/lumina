@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Aprendiz;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -20,14 +20,14 @@ class AuthController
     {
         try {
             $validator = Validator::make($request->all(), [
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required|min:8|confirmed',
-                'role' => 'required|in:aprendiz,admin,portero',
-                // Campos opcionales del aprendiz
-                'nombre' => 'nullable|string|max:255',
-                'apellido' => 'nullable|string|max:255',
-                'tipo_documento' => 'nullable|string|max:50',
-                'documento' => 'nullable|string|max:50',
+                'email' => 'required|email|unique:usuarios,email',
+                'password' => 'required|min:8',
+                'role_id' => 'required|exists:roles,id',
+                'formacion_id' => 'nullable|exists:formacion,id',
+                'nombre' => 'required|string|max:255',
+                'apellido' => 'required|string|max:255',
+                'tipo_documento' => 'required|string|max:50',
+                'documento' => 'required|string|max:50',
                 'edad' => 'nullable|integer|min:1|max:120',
                 'numero_telefono' => 'nullable|string|max:20',
                 'path_foto' => 'nullable|string',
@@ -41,26 +41,20 @@ class AuthController
                 ], 422);
             }
 
-            // Crear el usuario
+            // Crear el usuario con todos los datos
             $user = User::create([
+                'role_id' => $request->role_id,
+                'formacion_id' => $request->formacion_id,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'role' => $request->role,
+                'nombre' => $request->nombre,
+                'apellido' => $request->apellido,
+                'tipo_documento' => $request->tipo_documento,
+                'documento' => $request->documento,
+                'edad' => $request->edad,
+                'numero_telefono' => $request->numero_telefono,
+                'path_foto' => $request->path_foto,
             ]);
-
-            // Si el rol es aprendiz, crear también el registro en la tabla aprendiz
-            if ($request->role === 'aprendiz') {
-                Aprendiz::create([
-                    'user_id' => $user->id,
-                    'nombre' => $request->nombre,
-                    'apellido' => $request->apellido,
-                    'tipo_documento' => $request->tipo_documento,
-                    'documento' => $request->documento,
-                    'edad' => $request->edad,
-                    'numero_telefono' => $request->numero_telefono,
-                    'path_foto' => $request->path_foto,
-                ]);
-            }
 
             // Crear token
             $token = $user->createToken('auth_token')->plainTextToken;
@@ -69,7 +63,7 @@ class AuthController
                 'success' => true,
                 'message' => 'User registered successfully',
                 'data' => [
-                    'user' => $user->load('aprendiz'),
+                    'user' => $user->load(['role', 'formacion']),
                     'token' => $token,
                     'token_type' => 'Bearer'
                 ]
@@ -118,7 +112,7 @@ class AuthController
                 'success' => true,
                 'message' => 'Login successful',
                 'data' => [
-                    'user' => $user->load('aprendiz'),
+                    'user' => $user->load(['role', 'formacion']),
                     'token' => $token,
                     'token_type' => 'Bearer'
                 ]
@@ -139,7 +133,7 @@ class AuthController
     public function me(Request $request): JsonResponse
     {
         try {
-            $user = $request->user()->load('aprendiz');
+            $user = $request->user()->load(['role', 'formacion']);
             
             return response()->json([
                 'success' => true,
@@ -167,14 +161,14 @@ class AuthController
             $user = $request->user();
 
             $validator = Validator::make($request->all(), [
-                'email' => 'sometimes|email|unique:users,email,' . $user->id,
+                'email' => 'sometimes|email|unique:usuarios,email,' . $user->id,
                 'password' => 'sometimes|min:8|confirmed',
-                'role' => 'sometimes|in:aprendiz,admin,portero',
-                // Campos del aprendiz
-                'nombre' => 'nullable|string|max:255',
-                'apellido' => 'nullable|string|max:255',
-                'tipo_documento' => 'nullable|string|max:50',
-                'documento' => 'nullable|string|max:50',
+                'role_id' => 'sometimes|exists:roles,id',
+                'formacion_id' => 'nullable|exists:formacion,id',
+                'nombre' => 'sometimes|string|max:255',
+                'apellido' => 'sometimes|string|max:255',
+                'tipo_documento' => 'sometimes|string|max:50',
+                'documento' => 'sometimes|string|max:50',
                 'edad' => 'nullable|integer|min:1|max:120',
                 'numero_telefono' => 'nullable|string|max:20',
                 'path_foto' => 'nullable|string',
@@ -188,27 +182,23 @@ class AuthController
                 ], 422);
             }
 
-            // Actualizar usuario
-            $userData = $request->only(['email', 'role']);
+            // Actualizar usuario con todos los campos
+            $userData = $request->only([
+                'email', 'role_id', 'formacion_id', 'nombre', 'apellido',
+                'tipo_documento', 'documento', 'edad', 'numero_telefono', 'path_foto'
+            ]);
+            
             if ($request->has('password')) {
                 $userData['password'] = Hash::make($request->password);
             }
+            
             $user->update($userData);
-
-            // Actualizar datos del aprendiz si existen
-            if ($user->role === 'aprendiz' && $user->aprendiz) {
-                $aprendizData = $request->only([
-                    'nombre', 'apellido', 'tipo_documento', 'documento', 
-                    'edad', 'numero_telefono', 'path_foto'
-                ]);
-                $user->aprendiz->update($aprendizData);
-            }
 
             return response()->json([
                 'success' => true,
                 'message' => 'Profile updated successfully',
                 'data' => [
-                    'user' => $user->fresh()->load('aprendiz')
+                    'user' => $user->fresh()->load(['role', 'formacion'])
                 ]
             ], 200);
 

@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('elementos_adicionales', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre_elemento', 100)->nullable();
-            $table->text('path_foto_elemento')->nullable();
-            $table->foreignId('equipos_o_elementos_id')->constrained('equipos_o_elementos')->onDelete('cascade')->onUpdate('cascade');
+            $table->enum('nombre_rol', ['usuario', 'admin', 'portero'])->default('usuario');
         });
     }
 
@@ -24,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('elementos_adicionales');
+        Schema::dropIfExists('roles');
     }
 };

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('historial', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('aprendiz_id')->constrained('aprendiz')->onDelete('cascade');
-            $table->foreignId('equipos_o_elementos_id')->constrained('equipos_o_elementos')->onDelete('cascade');
+            $table->foreignId('usuario_id')->constrained('usuarios')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('equipos_o_elementos_id')->constrained('equipos_o_elementos')->onDelete('cascade')->onUpdate('cascade');
             $table->dateTime('ingreso')->nullable();
             $table->dateTime('salida')->nullable();
         });

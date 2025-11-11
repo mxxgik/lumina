@@ -8,34 +8,46 @@ use Illuminate\Support\Facades\Validator;
 
 class FormacionController
 {
+    /**
+     * Display a listing of the formaciones.
+     */
     public function index()
     {
-        $formaciones = Formacion::all();
+        $formaciones = Formacion::with(['nivelFormacion', 'usuarios'])->get();
         return response()->json(['success' => true, 'data' => $formaciones], 200);
     }
 
+    /**
+     * Store a newly created formacion in storage.
+     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|integer|exists:users,id',
-            'aprendiz_id' => 'required|integer|exists:aprendiz,id',
-            'tipo_programa_id' => 'required|integer|exists:tipos_programas,id',
+            'nivel_formacion_id' => 'required|integer|exists:nivel_formacion,id',
             'ficha' => 'required|string|max:255',
-            'fecha_fin_lectiva' => 'required|date',
+            'nombre_programa' => 'required|string|max:255',
+            'fecha_inicio_programa' => 'required|date',
+            'fecha_fin_programa' => 'required|date',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'error' => $validator->errors()], 400);
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 400);
         }
 
         $formacion = Formacion::create($validator->validated());
 
-        return response()->json(['success' => true, 'data' => $formacion], 201);
+        return response()->json([
+            'success' => true, 
+            'data' => $formacion->load('nivelFormacion')
+        ], 201);
     }
 
+    /**
+     * Display the specified formacion.
+     */
     public function show(string $id)
     {
-        $formacion = Formacion::find($id);
+        $formacion = Formacion::with(['nivelFormacion', 'usuarios'])->find($id);
 
         if (!$formacion) {
             return response()->json(['success' => false, 'message' => 'Formación no encontrada'], 404);
@@ -44,6 +56,9 @@ class FormacionController
         return response()->json(['success' => true, 'data' => $formacion], 200);
     }
 
+    /**
+     * Update the specified formacion in storage.
+     */
     public function update(Request $request, string $id)
     {
         $formacion = Formacion::find($id);
@@ -53,11 +68,11 @@ class FormacionController
         }
 
         $validator = Validator::make($request->all(), [
-            'user_id' => 'sometimes|integer|exists:users,id',
-            'aprendiz_id' => 'sometimes|integer|exists:aprendiz,id',
-            'tipo_programa_id' => 'sometimes|integer|exists:tipos_programas,id',
+            'nivel_formacion_id' => 'sometimes|integer|exists:nivel_formacion,id',
             'ficha' => 'sometimes|string|max:255',
-            'fecha_fin_lectiva' => 'sometimes|date',
+            'nombre_programa' => 'sometimes|string|max:255',
+            'fecha_inicio_programa' => 'sometimes|date',
+            'fecha_fin_programa' => 'sometimes|date',
         ]);
 
         if ($validator->fails()) {
@@ -66,9 +81,15 @@ class FormacionController
 
         $formacion->update($validator->validated());
 
-        return response()->json(['success' => true, 'data' => $formacion], 200);
+        return response()->json([
+            'success' => true, 
+            'data' => $formacion->fresh()->load('nivelFormacion')
+        ], 200);
     }
 
+    /**
+     * Remove the specified formacion from storage.
+     */
     public function destroy(string $id)
     {
         $formacion = Formacion::find($id);
@@ -79,6 +100,21 @@ class FormacionController
 
         $formacion->delete();
 
-        return response()->json(['success' => true, 'message' => 'La formación con id: ' . $id . ' fue eliminada correctamente'], 200);
+        return response()->json([
+            'success' => true, 
+            'message' => 'La formación con id: ' . $id . ' fue eliminada correctamente'
+        ], 200);
+    }
+
+    /**
+     * Get formaciones by nivel de formacion
+     */
+    public function getByNivelFormacion(string $nivelFormacionId)
+    {
+        $formaciones = Formacion::with(['nivelFormacion', 'usuarios'])
+            ->where('nivel_formacion_id', $nivelFormacionId)
+            ->get();
+
+        return response()->json(['success' => true, 'data' => $formaciones], 200);
     }
 }
