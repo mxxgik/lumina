@@ -83,4 +83,12 @@ class EquipoOElementoController
 
         return response()->json(['success' => true, 'message' => 'El equipo o elemento con id: ' . $id . ' fue eliminado correctamente'], 200);
     }
+
+    public function getByUser()
+    {
+        $user = auth()->user();
+        $equipos = $user->equipos;
+
+        return response()->json(['success' => true, 'data' => $equipos], 200);
+    }
 }
