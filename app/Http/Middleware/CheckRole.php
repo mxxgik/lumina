@@ -15,7 +15,8 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next, string $role): Response
     {
-        if (!$request->user() || ($request->user()->role !== $role && $request->user()->role !== 'admin')) {
+        $user = $request->user();
+        if (!$user || ($user->role->nombre_rol !== $role && $user->role->nombre_rol !== 'admin')) {
             return response()->json([
                 'response_code' => 403,
                 'success' => false,
