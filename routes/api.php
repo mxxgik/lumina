@@ -3,16 +3,13 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\AprendizController;
-use App\Http\Controllers\AprendizElementoAdicionalController;
-use App\Http\Controllers\AprendizEquipoController;
 use App\Http\Controllers\ElementoAdicionalController;
-use App\Http\Controllers\EquipoAdicionalController;
 use App\Http\Controllers\EquipoOElementoController;
 use App\Http\Controllers\FormacionController;
 use App\Http\Controllers\HistorialController;
-use App\Http\Controllers\HistorialElementoAdicionalController;
-use App\Http\Controllers\TipoProgramaController;
+use App\Http\Controllers\NivelFormacionController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UsuarioController;
 
 //Authentication related routes
 Route::prefix('auth')->group(function ()
