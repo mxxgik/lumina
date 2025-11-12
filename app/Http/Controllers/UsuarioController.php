@@ -151,4 +151,14 @@ class UsuarioController
 
         return response()->json(['success' => true, 'data' => $usuarios], 200);
     }
+
+    /**
+     * Get authenticated user's profile
+     */
+    public function profile()
+    {
+        $usuario = auth()->user()->load(['role', 'formacion', 'equipos', 'historiales']);
+
+        return response()->json(['success' => true, 'data' => $usuario], 200);
+    }
 }
