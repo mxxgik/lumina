@@ -17,9 +17,6 @@ Route::prefix('auth')->group(function ()
     //Login available for both mobile and desktop web clients
     Route::post("login", [AuthController::class, "login"])->name("login");
     
-    //Register only available for mobile client
-    Route::post("register", [AuthController::class, "register"])->name("register");
-    
     //Logout route, available for both mobile and web clients
     Route::middleware(['auth:sanctum'])->post("logout", [AuthController::class, "logout"])->name("logout");
 });
@@ -104,68 +101,13 @@ Route::middleware(['auth:sanctum', 'role:aprendiz'])->group(function ()
 Route::middleware(['auth:sanctum', 'role:administrator'])->group(function ()
 {
     Route::prefix('admin')->group(function () {
-        // Aprendiz routes
-        Route::prefix('aprendices')->group(function () {
-            Route::get("/", [UsuarioController::class, "index"]);
-            Route::post("/", [UsuarioController::class, "store"]);
-            Route::get("/{id}", [UsuarioController::class, "show"]);
-            Route::put("/{id}", [UsuarioController::class, "update"]);
-            Route::delete("/{id}", [UsuarioController::class, "destroy"]);
-        });
-
-        // ElementoAdicional routes
-        Route::prefix('elementos-adicionales')->group(function () {
-            Route::get("/", [ElementoAdicionalController::class, "index"]);
-            Route::post("/", [ElementoAdicionalController::class, "store"]);
-            Route::get("/{id}", [ElementoAdicionalController::class, "show"]);
-            Route::put("/{id}", [ElementoAdicionalController::class, "update"]);
-            Route::delete("/{id}", [ElementoAdicionalController::class, "destroy"]);
-        });
-
-        // EquipoOElemento routes
-        Route::prefix('equipos-elementos')->group(function () {
-            Route::get("/", [EquipoOElementoController::class, "index"]);
-            Route::post("/", [EquipoOElementoController::class, "store"]);
-            Route::get("/{id}", [EquipoOElementoController::class, "show"]);
-            Route::put("/{id}", [EquipoOElementoController::class, "update"]);
-            Route::delete("/{id}", [EquipoOElementoController::class, "destroy"]);
-        });
-
-        // Formacion routes
-        Route::prefix('formaciones')->group(function () {
-            Route::get("/", [FormacionController::class, "index"]);
-            Route::post("/", [FormacionController::class, "store"]);
-            Route::get("/{id}", [FormacionController::class, "show"]);
-            Route::put("/{id}", [FormacionController::class, "update"]);
-            Route::delete("/{id}", [FormacionController::class, "destroy"]);
-        });
-
-        // Historial routes
-        Route::prefix('historial')->group(function () {
-            Route::get("/", [HistorialController::class, "index"]);
-            Route::post("/", [HistorialController::class, "store"]);
-            Route::get("/{id}", [HistorialController::class, "show"]);
-            Route::put("/{id}", [HistorialController::class, "update"]);
-            Route::delete("/{id}", [HistorialController::class, "destroy"]);
-        });
-
-        // TipoPrograma routes
-        Route::prefix('tipos-programa')->group(function () {
-            Route::get("/", [NivelFormacionController::class, "index"]);
-            Route::post("/", [NivelFormacionController::class, "store"]);
-            Route::get("/{id}", [NivelFormacionController::class, "show"]);
-            Route::put("/{id}", [NivelFormacionController::class, "update"]);
-            Route::delete("/{id}", [NivelFormacionController::class, "destroy"]);
-        });
-
-        // AprendizEquipo routes
-        Route::prefix('aprendices-equipos')->group(function () {
-            Route::get("/", [ElementoAdicionalController::class, "index"]);
-            Route::post("/", [ElementoAdicionalController::class, "store"]);
-            Route::get("/{id}", [ElementoAdicionalController::class, "show"]);
-            Route::put("/{id}", [ElementoAdicionalController::class, "update"]);
-            Route::delete("/{id}", [ElementoAdicionalController::class, "destroy"]);
-        });
-
+        Route::apiResource('users', UsuarioController::class);
+        Route::post('users', [AuthController::class, 'register'])->name('register');
+        Route::apiResource('elementos-adicionales', ElementoAdicionalController::class);
+        Route::apiResource('equipos-elementos', EquipoOElementoController::class);
+        Route::apiResource('formaciones', FormacionController::class);
+        Route::apiResource('historial', HistorialController::class);
+        Route::apiResource('tipos-programa', NivelFormacionController::class);
+        Route::apiResource('aprendices-equipos', ElementoAdicionalController::class);
     });
 });
