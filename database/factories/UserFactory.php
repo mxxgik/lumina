@@ -5,6 +5,8 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Models\Role;
+use App\Models\Formacion;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -24,8 +26,8 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'role_id' => RoleFactory::factory(),
-            'formacion_id' => FormacionFactory::factory(),
+            'role_id' => Role::factory(),
+            'formacion_id' => Formacion::factory(),
             'nombre' => $this->faker->firstName(),
             'apellido' => $this->faker->lastName(),
             'tipo_documento' => $this->faker->randomElement(['CC', 'TI', 'CE', 'PAS']),

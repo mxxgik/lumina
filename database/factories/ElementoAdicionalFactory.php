@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\EquipoOElemento;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ElementoAdicional>
@@ -19,7 +20,7 @@ class ElementoAdicionalFactory extends Factory
         return [
             'nombre_elemento' => $this->faker->word(),
             'path_foto_elemento' => $this->faker->imageUrl(),
-            'equipos_o_elementos_id' => EquipoOElementoFactory::factory(),
+            'equipos_o_elementos_id' => EquipoOElemento::factory(),
         ];
     }
 }

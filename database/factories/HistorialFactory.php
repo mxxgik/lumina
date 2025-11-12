@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\User;
+use App\Models\EquipoOElemento;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Historial>
@@ -17,8 +19,8 @@ class HistorialFactory extends Factory
     public function definition(): array
     {
         return [
-            'usuario_id' => UserFactory::factory(),
-            'equipos_o_elementos_id' => EquipoOElementoFactory::factory(),
+            'usuario_id' => User::factory(),
+            'equipos_o_elementos_id' => EquipoOElemento::factory(),
             'ingreso' => $this->faker->dateTime(),
             'salida' => $this->faker->optional()->dateTime(),
         ];
