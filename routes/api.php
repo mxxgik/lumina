@@ -98,7 +98,7 @@ Route::middleware(['auth:sanctum', 'role:aprendiz'])->group(function ()
 });
 
 //Routes for 'administrator' role (full access to all endpoints)
-Route::middleware(['auth:sanctum', 'role:administrator'])->group(function ()
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function ()
 {
     Route::prefix('admin')->group(function () {
         Route::apiResource('users', UsuarioController::class);
