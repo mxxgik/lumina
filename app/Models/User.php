@@ -79,6 +79,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Alias for equipos() method - equipos o elementos.
+     */
+    public function equipoOElementos()
+    {
+        return $this->equipos();
+    }
+
+    /**
      * Get the historial for the user.
      */
     public function historiales()
