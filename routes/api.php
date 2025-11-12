@@ -63,8 +63,8 @@ Route::middleware(['auth:sanctum', 'role:portero'])->group(function ()
 
         // AprendizEquipo routes (read-only)
         Route::prefix('aprendices-equipos')->group(function () {
-            Route::get("/", [ElementoAdicionalController::class, "index"]);
-            Route::get("/{id}", [ElementoAdicionalController::class, "show"]);
+            Route::get("/", [EquipoOElementoController::class, "index"]);
+            Route::get("/{id}", [EquipoOElementoController::class, "show"]);
         });
 
     });
@@ -75,12 +75,12 @@ Route::middleware(['auth:sanctum', 'role:aprendiz'])->group(function ()
 {
     Route::prefix('aprendiz')->group(function () {
         // Own Aprendiz profile
-        Route::get("/profile", [UsuarioController::class, "show"]); // Assuming show is filtered by authenticated user
+        Route::get("/profile", [UsuarioController::class, "profile"]);
 
         // Own equipment assignments
         Route::prefix('equipos')->group(function () {
-            Route::get("/", [ElementoAdicionalController::class, "index"]); // Filtered by own aprendiz_id
-            Route::get("/{id}", [ElementoAdicionalController::class, "show"]);
+            Route::get("/", [EquipoOElementoController::class, "getByUser"]);
+            Route::get("/{id}", [EquipoOElementoController::class, "show"]);
         });
 
         // Own history
@@ -102,12 +102,12 @@ Route::middleware(['auth:sanctum', 'role:administrator'])->group(function ()
 {
     Route::prefix('admin')->group(function () {
         Route::apiResource('users', UsuarioController::class);
-        Route::post('users', [AuthController::class, 'register'])->name('register');
+        Route::post('register', [AuthController::class, 'register'])->name('register');
         Route::apiResource('elementos-adicionales', ElementoAdicionalController::class);
         Route::apiResource('equipos-elementos', EquipoOElementoController::class);
         Route::apiResource('formaciones', FormacionController::class);
         Route::apiResource('historial', HistorialController::class);
         Route::apiResource('tipos-programa', NivelFormacionController::class);
-        Route::apiResource('aprendices-equipos', ElementoAdicionalController::class);
+        Route::apiResource('aprendices-equipos', EquipoOElementoController::class);
     });
 });
