@@ -34,6 +34,20 @@ class TestDataSeeder extends Seeder
             'email' => 'admin@admin.com',
             'password' => Hash::make('admin12345'),
         ]);
+
+        User::create([
+            'role_id' => 3,
+            'formacion_id' => null,
+            'nombre' => 'Celador',
+            'apellido' => 'Celador',
+            'tipo_documento' => null,
+            'documento' => null,
+            'edad' => null,
+            'numero_telefono' => null,
+            'email' => 'celador@celador.com',
+            'password' => Hash::make('celador12345'),
+        ]);
+
         NivelFormacion::factory(5)->create();
 
         Formacion::factory(10)->create();
