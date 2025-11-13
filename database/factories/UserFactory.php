@@ -26,8 +26,8 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'role_id' => Role::factory(),
-            'formacion_id' => Formacion::factory(),
+            'role_id' => Role::inRandomOrder()->first()->id,
+            'formacion_id' => Formacion::inRandomOrder()->first()->id,
             'nombre' => $this->faker->firstName(),
             'apellido' => $this->faker->lastName(),
             'tipo_documento' => $this->faker->randomElement(['CC', 'TI', 'CE', 'PAS']),
