@@ -48,15 +48,15 @@ class TestDataSeeder extends Seeder
             'password' => Hash::make('celador12345'),
         ]);
 
-        NivelFormacion::factory(5)->create();
+        #NivelFormacion::factory(5)->create();
 
-        Formacion::factory(10)->create();
+        #Formacion::factory(10)->create();
 
-        User::factory(19)->hasAttached(EquipoOElemento::factory(15))->create(); 
+        #User::factory(19)->hasAttached(EquipoOElemento::factory(15))->create(); 
 
-        EquipoOElemento::all()->each(function ($equipo){
-            ElementoAdicional::factory(rand(1,3))->create(['equipos_o_elementos_id'=> $equipo->id]);
-        });
+        #EquipoOElemento::all()->each(function ($equipo){
+        #    ElementoAdicional::factory(rand(1,3))->create(['equipos_o_elementos_id'=> $equipo->id]);
+        #});
 
         Historial::factory(50)->create();
     }
