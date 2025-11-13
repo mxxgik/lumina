@@ -20,6 +20,8 @@ class TestDataSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(NivelFormacionSeeder::class);
+        $this->call(FormacionSeeder::class);
         $this->call(RoleSeeder::class);
 
         User::create([
