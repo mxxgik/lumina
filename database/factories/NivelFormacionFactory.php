@@ -17,7 +17,7 @@ class NivelFormacionFactory extends Factory
     public function definition(): array
     {
         return [
-            'nivel_formacion' => $this->faker->randomElement(['Técnico', 'Tecnólogo', 'Profesional', 'Especialización', 'Maestría', 'Doctorado']),
+            'nivel_formacion' => $this->faker->randomElement(['Técnico', 'Tecnólogo', 'Auxiliar', 'Operario', 'Especializacion Tecnologica']),
         ];
     }
 }
