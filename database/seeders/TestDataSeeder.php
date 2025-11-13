@@ -50,16 +50,23 @@ class TestDataSeeder extends Seeder
             'password' => Hash::make('celador12345'),
         ]);
 
-        #NivelFormacion::factory(5)->create();
-
-        #Formacion::factory(10)->create();
-
-        #User::factory(19)->hasAttached(EquipoOElemento::factory(15))->create(); 
-
-        #EquipoOElemento::all()->each(function ($equipo){
-        #    ElementoAdicional::factory(rand(1,3))->create(['equipos_o_elementos_id'=> $equipo->id]);
-        #});
-
         Historial::factory(50)->create();
+
+        // Assign each user with 'usuario' role to one equipo
+        $users = User::where('role_id', 1)->get(); // Only users with role 'usuario'
+        $equipos = EquipoOElemento::all();
+        $users->each(function ($user, $index) use ($equipos) {
+            // Assign to equipo at same index if available, cycle if necessary
+            $equipoIndex = $index % $equipos->count();
+            UsuarioEquipo::create([
+                'usuario_id' => $user->id,
+                'equipos_o_elementos_id' => $equipos[$equipoIndex]->id,
+            ]);
+        });
+
+        EquipoOElemento::all()->each(function ($equipo){
+            ElementoAdicional::factory(rand(1,3))->create(['equipos_o_elementos_id'=> $equipo->id]);
+        });
+
     }
 }
