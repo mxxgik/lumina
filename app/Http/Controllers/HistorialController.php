@@ -41,9 +41,9 @@ class HistorialController
         ], 201);
     }
 
-    /**
-     * Display the specified historial.
-     */
+        /**
+         * Display the specified historial.
+         */
     public function show(string $id)
     {
         $historial = Historial::with(['usuario', 'equipo'])->find($id);
@@ -181,4 +181,31 @@ class HistorialController
             'data' => $historial->fresh()->load(['usuario', 'equipo'])
         ], 200);
     }
+
+    /**
+     * Get historial for authenticated user
+     */
+    public function getByAuthUser()
+    {
+        $user = auth()->user();
+        
+        $historiales = Historial::with(['equipo.elementosAdicionales'])
+            ->where('usuario_id', $user->id)
+            ->orderBy('ingreso', 'desc')
+            ->get()
+            ->map(function ($historial) {
+                return [
+                    'id' => $historial->id,
+                    'ingreso' => $historial->ingreso,
+                    'salida' => $historial->salida,
+                    'equipo' => $historial->equipo
+                ];
+            });
+
+        return response()->json([
+            'success' => true, 
+            'data' => $historiales
+        ], 200);
+    }
 }
+ 

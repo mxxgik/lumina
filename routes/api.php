@@ -71,10 +71,10 @@ Route::middleware(['auth:sanctum', 'role:portero'])->group(function ()
 });
 
 //Routes for 'aprendiz' role (access only to own information)
-Route::middleware(['auth:sanctum', 'role:aprendiz'])->group(function ()
+Route::middleware(['auth:sanctum', 'role:usuario'])->group(function ()
 {
-    Route::prefix('aprendiz')->group(function () {
-        // Own Aprendiz profile
+    Route::prefix('usuario')->group(function () {
+        // Own usuario profile
         Route::get("/profile", [UsuarioController::class, "profile"]);
 
         // Own equipment assignments
@@ -85,13 +85,13 @@ Route::middleware(['auth:sanctum', 'role:aprendiz'])->group(function ()
 
         // Own history
         Route::prefix('historial')->group(function () {
-            Route::get("/", [HistorialController::class, "index"]); // Filtered by own assignments
+            Route::get("/", [HistorialController::class, "getByAuthUser"]);
             Route::get("/{id}", [HistorialController::class, "show"]);
         });
 
         // Own training information
         Route::prefix('formaciones')->group(function () {
-            Route::get("/", [FormacionController::class, "index"]); // Filtered by own aprendiz_id
+            Route::get("/", [FormacionController::class, "index"]); // Filtered by own usuario_id
             Route::get("/{id}", [FormacionController::class, "show"]);
         });
     });
