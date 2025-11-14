@@ -87,8 +87,13 @@ class EquipoOElementoController
     public function getByUser()
     {
         $user = auth()->user();
-        $equipos = $user->equipos;
+        
+        // Cargar equipos con sus elementos adicionales
+        $equipos = $user->equipos()->with('elementosAdicionales')->get();
 
-        return response()->json(['success' => true, 'data' => $equipos], 200);
+        return response()->json([
+            'success' => true,
+            'data' => $equipos
+        ], 200);
     }
 }
