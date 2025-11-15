@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Historial;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
 
 class HistorialController
@@ -129,33 +130,6 @@ class HistorialController
     }
 
     /**
-     * Register equipment entry (ingreso)
-     */
-    public function registrarIngreso(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'usuario_id' => 'required|integer|exists:usuarios,id',
-            'equipos_o_elementos_id' => 'required|integer|exists:equipos_o_elementos,id',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->errors()], 400);
-        }
-
-        $historial = Historial::create([
-            'usuario_id' => $request->usuario_id,
-            'equipos_o_elementos_id' => $request->equipos_o_elementos_id,
-            'ingreso' => now(),
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Ingreso registrado correctamente',
-            'data' => $historial->load(['usuario', 'equipo'])
-        ], 201);
-    }
-
-    /**
      * Register equipment exit (salida)
      */
     public function registrarSalida(string $id)
@@ -206,6 +180,35 @@ class HistorialController
             'success' => true, 
             'data' => $historiales
         ], 200);
+    }
+    
+    public function registerEntrance(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'usuario_id' => 'required|integer|exists:usuarios,id',
+            'equipos_o_elementos_id' => 'required|integer|exists:equipos_o_elementos,id',
+            'datetime' => 'required|date',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 400);
+        }
+
+        if (Carbon::parse($request->datetime)->isFuture()) {
+            return response()->json(['success' => false, 'message' => 'La fecha de entrada no puede ser futura'], 400);
+        }
+
+        $historial = Historial::create([
+            'usuario_id' => $request->usuario_id,
+            'equipos_o_elementos_id' => $request->equipos_o_elementos_id,
+            'ingreso' => $request->datetime,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Entrada registrada correctamente',
+            'data' => $historial->load(['usuario', 'equipo'])
+        ], 201);
     }
 }
  
