@@ -161,4 +161,29 @@ class UsuarioController
 
         return response()->json(['success' => true, 'data' => $usuario], 200);
     }
+
+    public function getByIdentification(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'error' => $validator->errors()], 400);
+        }
+
+        $user = User::find($request->id);
+
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'Usuario no encontrado'], 404);
+        }
+
+        // Cargar equipos con sus elementos adicionales
+        $user->load('equipos.elementosAdicionales');
+
+        return response()->json([
+            'success' => true,
+            'data' => $user
+        ], 200);
+    }
 }
