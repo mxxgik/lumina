@@ -29,6 +29,7 @@ Route::middleware(['auth:sanctum', 'role:portero'])->group(function ()
         Route::prefix('aprendices')->group(function () {
             Route::get("/", [UsuarioController::class, "index"]);
             Route::get("/{id}", [UsuarioController::class, "show"]);
+            Route::post("/", [UsuarioController::class, "getByIdentification"]);
         });
 
         // ElementoAdicional routes (read-only)
@@ -41,6 +42,7 @@ Route::middleware(['auth:sanctum', 'role:portero'])->group(function ()
         Route::prefix('equipos-elementos')->group(function () {
             Route::get("/", [EquipoOElementoController::class, "index"]);
             Route::get("/{id}", [EquipoOElementoController::class, "show"]);
+            Route::post("/", [EquipoOElementoController::class, "getByHash"]);
         });
 
         // Formacion routes (read-only)
@@ -53,6 +55,10 @@ Route::middleware(['auth:sanctum', 'role:portero'])->group(function ()
         Route::prefix('historial')->group(function () {
             Route::get("/", [HistorialController::class, "index"]);
             Route::get("/{id}", [HistorialController::class, "show"]);
+
+            //Recieves userId and equipoId, in case of exit, check for entrance date and time field
+            //if null or greater than current date send error, set exit date and time to current
+            Route::post("/", [HistorialController::class, "registerEntrance"]);
         });
 
         // TipoPrograma routes (read-only)
