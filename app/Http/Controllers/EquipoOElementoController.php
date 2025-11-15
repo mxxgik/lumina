@@ -96,4 +96,23 @@ class EquipoOElementoController
             'data' => $equipos
         ], 200);
     }
+    
+    public function getByHash(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'hash' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'error' => $validator->errors()], 400);
+        }
+
+        $equipo = EquipoOElemento::where('qr_hash', $request->hash)->with('elementosAdicionales')->first();
+
+        if (!$equipo) {
+            return response()->json(['success' => false, 'message' => 'Equipo o elemento no encontrado'], 404);
+        }
+
+        return response()->json(['success' => true, 'data' => $equipo], 200);
+    }
 }
