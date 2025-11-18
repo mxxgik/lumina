@@ -8,6 +8,7 @@ use App\Http\Controllers\EquipoOElementoController;
 use App\Http\Controllers\FormacionController;
 use App\Http\Controllers\HistorialController;
 use App\Http\Controllers\NivelFormacionController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UsuarioController;
 
@@ -115,5 +116,23 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function ()
         Route::apiResource('historial', HistorialController::class);
         Route::apiResource('tipos-programa', NivelFormacionController::class);
         Route::apiResource('aprendices-equipos', EquipoOElementoController::class);
+    });
+});
+
+// ============================================
+// NOTIFICATION ROUTES
+// ============================================
+Route::middleware('auth:sanctum')->group(function () {
+    Route::prefix('usuario')->group(function () {
+        // Push token registration
+        Route::post('/push-token', [NotificationController::class, 'registerToken']);
+        
+        // Notifications management
+        Route::prefix('notifications')->group(function () {
+            Route::get('/', [NotificationController::class, 'index']);
+            Route::patch('/{id}/read', [NotificationController::class, 'markAsRead']);
+            Route::patch('/read-all', [NotificationController::class, 'markAllAsRead']);
+            Route::delete('/{id}', [NotificationController::class, 'destroy']);
+        });
     });
 });

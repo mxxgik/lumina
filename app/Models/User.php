@@ -31,6 +31,10 @@ class User extends Authenticatable
         'path_foto',
         'email',
         'password',
+        // Push notification fields
+        'push_token',
+        'device_id',
+        'platform',
     ];
 
     /**
@@ -92,5 +96,13 @@ class User extends Authenticatable
     public function historiales()
     {
         return $this->hasMany(Historial::class, 'usuario_id');
+    }
+
+    /**
+     * Get the notifications for the user.
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'usuario_id');
     }
 }
