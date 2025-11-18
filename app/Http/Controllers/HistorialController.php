@@ -130,6 +130,53 @@ class HistorialController
     }
 
     /**
+     * Register equipment entry (ingreso)
+     */
+    public function registrarIngreso(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'usuario_id' => 'required|integer|exists:usuarios,id',
+            'equipos_o_elementos_id' => 'required|integer|exists:equipos_o_elementos,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 400);
+        }
+
+        $historial = Historial::create([
+            'usuario_id' => $request->usuario_id,
+            'equipos_o_elementos_id' => $request->equipos_o_elementos_id,
+            'ingreso' => now(),
+        ]);
+
+        // Enviar notificación de ingreso de equipo
+        try {
+            $equipo = $historial->equipo;
+            $notificationController = new NotificationController();
+            $notificationController->sendPushNotification(
+                $request->usuario_id,
+                'Entrada Registrada',
+                "Ingreso registrado: {$equipo->tipo_elemento} {$equipo->marca}",
+                [
+                    'type' => 'entry_registered',
+                    'historial_id' => $historial->id,
+                    'equipment_id' => $equipo->id,
+                    'timestamp' => now()->toIso8601String(),
+                    'navigate_to' => 'historial',
+                ]
+            );
+        } catch (\Exception $e) {
+            \Log::warning('No se pudo enviar notificación de ingreso: ' . $e->getMessage());
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Ingreso registrado correctamente',
+            'data' => $historial->load(['usuario', 'equipo'])
+        ], 201);
+    }
+
+    /**
      * Register equipment exit (salida)
      */
     public function registrarSalida(string $id)
@@ -148,6 +195,26 @@ class HistorialController
         }
 
         $historial->update(['salida' => now()]);
+
+        // Enviar notificación de salida de equipo
+        try {
+            $equipo = $historial->equipo;
+            $notificationController = new NotificationController();
+            $notificationController->sendPushNotification(
+                $historial->usuario_id,
+                'Salida Registrada',
+                "Salida registrada: {$equipo->tipo_elemento} {$equipo->marca}",
+                [
+                    'type' => 'exit_registered',
+                    'historial_id' => $historial->id,
+                    'equipment_id' => $equipo->id,
+                    'timestamp' => now()->toIso8601String(),
+                    'navigate_to' => 'historial',
+                ]
+            );
+        } catch (\Exception $e) {
+            \Log::warning('No se pudo enviar notificación de salida: ' . $e->getMessage());
+        }
 
         return response()->json([
             'success' => true,
