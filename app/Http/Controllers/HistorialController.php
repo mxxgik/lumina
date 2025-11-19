@@ -147,6 +147,9 @@ class HistorialController
 
             $historial->delete();
 
+            // Broadcast the updated historial list
+            broadcast(new HistorialUpdated())->toOthers();
+
             return response()->json([
                 'success' => true,
                 'message' => 'El historial con id: ' . $id . ' fue eliminado correctamente'
