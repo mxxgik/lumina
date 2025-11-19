@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\HistorialUpdated;
 use App\Models\Historial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -48,6 +49,9 @@ class HistorialController
             }
 
             $historial = Historial::create($validator->validated());
+
+            // Broadcast the updated historial list
+            broadcast(new HistorialUpdated())->toOthers();
 
             return response()->json([
                 'success' => true,
@@ -112,6 +116,9 @@ class HistorialController
             }
 
             $historial->update($validator->validated());
+
+            // Broadcast the updated historial list
+            broadcast(new HistorialUpdated())->toOthers();
 
             return response()->json([
                 'success' => true,
@@ -230,6 +237,9 @@ class HistorialController
                 'ingreso' => now(),
             ]);
 
+            // Broadcast the updated historial list
+            broadcast(new HistorialUpdated())->toOthers();
+
             // Enviar notificación de ingreso de equipo
             try {
                 $equipo = $historial->equipo;
@@ -284,6 +294,9 @@ class HistorialController
             }
 
             $historial->update(['salida' => now()]);
+
+            // Broadcast the updated historial list
+            broadcast(new HistorialUpdated())->toOthers();
 
             // Enviar notificación de salida de equipo
             try {
@@ -386,6 +399,9 @@ class HistorialController
                 'equipos_o_elementos_id' => $request->equipos_o_elementos_id,
                 'ingreso' => $request->datetime,
             ]);
+
+            // Broadcast the updated historial list
+            broadcast(new HistorialUpdated())->toOthers();
 
             return response()->json([
                 'success' => true,
