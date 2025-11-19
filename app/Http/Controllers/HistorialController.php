@@ -14,8 +14,16 @@ class HistorialController
      */
     public function index()
     {
-        $historiales = Historial::with(['usuario', 'equipo'])->get();
-        return response()->json(['success' => true, 'data' => $historiales], 200);
+        try {
+            $historiales = Historial::with(['usuario', 'equipo'])->get();
+            return response()->json(['success' => true, 'data' => $historiales], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve historiales',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -23,23 +31,35 @@ class HistorialController
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'usuario_id' => 'required|integer|exists:usuarios,id',
-            'equipos_o_elementos_id' => 'required|integer|exists:equipos_o_elementos,id',
-            'ingreso' => 'required|date',
-            'salida' => 'nullable|date',
-        ]);
+        try {
+            $validator = Validator::make($request->all(), [
+                'usuario_id' => 'required|integer|exists:usuarios,id',
+                'equipos_o_elementos_id' => 'required|integer|exists:equipos_o_elementos,id',
+                'ingreso' => 'required|date',
+                'salida' => 'nullable|date',
+            ]);
 
-        if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->errors()], 400);
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation errors',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $historial = Historial::create($validator->validated());
+
+            return response()->json([
+                'success' => true,
+                'data' => $historial->load(['usuario', 'equipo'])
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create historial',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $historial = Historial::create($validator->validated());
-
-        return response()->json([
-            'success' => true, 
-            'data' => $historial->load(['usuario', 'equipo'])
-        ], 201);
     }
 
         /**
@@ -47,13 +67,21 @@ class HistorialController
          */
     public function show(string $id)
     {
-        $historial = Historial::with(['usuario', 'equipo'])->find($id);
+        try {
+            $historial = Historial::with(['usuario', 'equipo'])->find($id);
 
-        if (!$historial) {
-            return response()->json(['success' => false, 'message' => 'Historial no encontrado'], 404);
+            if (!$historial) {
+                return response()->json(['success' => false, 'message' => 'Historial no encontrado'], 404);
+            }
+
+            return response()->json(['success' => true, 'data' => $historial], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve historial',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        return response()->json(['success' => true, 'data' => $historial], 200);
     }
 
     /**
@@ -61,29 +89,41 @@ class HistorialController
      */
     public function update(Request $request, string $id)
     {
-        $historial = Historial::find($id);
+        try {
+            $historial = Historial::find($id);
 
-        if (!$historial) {
-            return response()->json(['success' => false, 'message' => 'Historial no encontrado'], 404);
+            if (!$historial) {
+                return response()->json(['success' => false, 'message' => 'Historial no encontrado'], 404);
+            }
+
+            $validator = Validator::make($request->all(), [
+                'usuario_id' => 'sometimes|integer|exists:usuarios,id',
+                'equipos_o_elementos_id' => 'sometimes|integer|exists:equipos_o_elementos,id',
+                'ingreso' => 'sometimes|date',
+                'salida' => 'nullable|date',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation errors',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $historial->update($validator->validated());
+
+            return response()->json([
+                'success' => true,
+                'data' => $historial->fresh()->load(['usuario', 'equipo'])
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update historial',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $validator = Validator::make($request->all(), [
-            'usuario_id' => 'sometimes|integer|exists:usuarios,id',
-            'equipos_o_elementos_id' => 'sometimes|integer|exists:equipos_o_elementos,id',
-            'ingreso' => 'sometimes|date',
-            'salida' => 'nullable|date',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->errors()], 400);
-        }
-
-        $historial->update($validator->validated());
-
-        return response()->json([
-            'success' => true, 
-            'data' => $historial->fresh()->load(['usuario', 'equipo'])
-        ], 200);
     }
 
     /**
@@ -91,18 +131,26 @@ class HistorialController
      */
     public function destroy(string $id)
     {
-        $historial = Historial::find($id);
+        try {
+            $historial = Historial::find($id);
 
-        if (!$historial) {
-            return response()->json(['success' => false, 'message' => 'Historial no encontrado'], 404);
+            if (!$historial) {
+                return response()->json(['success' => false, 'message' => 'Historial no encontrado'], 404);
+            }
+
+            $historial->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'El historial con id: ' . $id . ' fue eliminado correctamente'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete historial',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $historial->delete();
-
-        return response()->json([
-            'success' => true, 
-            'message' => 'El historial con id: ' . $id . ' fue eliminado correctamente'
-        ], 200);
     }
 
     /**
@@ -110,11 +158,25 @@ class HistorialController
      */
     public function getByUsuario(string $usuarioId)
     {
-        $historiales = Historial::with(['usuario', 'equipo'])
-            ->where('usuario_id', $usuarioId)
-            ->get();
+        try {
+            // Check if usuario exists
+            $usuario = \App\Models\User::find($usuarioId);
+            if (!$usuario) {
+                return response()->json(['success' => false, 'message' => 'Usuario no encontrado'], 404);
+            }
 
-        return response()->json(['success' => true, 'data' => $historiales], 200);
+            $historiales = Historial::with(['usuario', 'equipo'])
+                ->where('usuario_id', $usuarioId)
+                ->get();
+
+            return response()->json(['success' => true, 'data' => $historiales], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve historial by usuario',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -122,11 +184,25 @@ class HistorialController
      */
     public function getByEquipo(string $equipoId)
     {
-        $historiales = Historial::with(['usuario', 'equipo'])
-            ->where('equipos_o_elementos_id', $equipoId)
-            ->get();
+        try {
+            // Check if equipo exists
+            $equipo = \App\Models\EquipoOElemento::find($equipoId);
+            if (!$equipo) {
+                return response()->json(['success' => false, 'message' => 'Equipo o elemento no encontrado'], 404);
+            }
 
-        return response()->json(['success' => true, 'data' => $historiales], 200);
+            $historiales = Historial::with(['usuario', 'equipo'])
+                ->where('equipos_o_elementos_id', $equipoId)
+                ->get();
+
+            return response()->json(['success' => true, 'data' => $historiales], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve historial by equipo',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -134,46 +210,58 @@ class HistorialController
      */
     public function registrarIngreso(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'usuario_id' => 'required|integer|exists:usuarios,id',
-            'equipos_o_elementos_id' => 'required|integer|exists:equipos_o_elementos,id',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->errors()], 400);
-        }
-
-        $historial = Historial::create([
-            'usuario_id' => $request->usuario_id,
-            'equipos_o_elementos_id' => $request->equipos_o_elementos_id,
-            'ingreso' => now(),
-        ]);
-
-        // Enviar notificación de ingreso de equipo
         try {
-            $equipo = $historial->equipo;
-            $notificationController = new NotificationController();
-            $notificationController->sendPushNotification(
-                $request->usuario_id,
-                'Entrada Registrada',
-                "Ingreso registrado: {$equipo->tipo_elemento} {$equipo->marca}",
-                [
-                    'type' => 'entry_registered',
-                    'historial_id' => $historial->id,
-                    'equipment_id' => $equipo->id,
-                    'timestamp' => now()->toIso8601String(),
-                    'navigate_to' => 'historial',
-                ]
-            );
-        } catch (\Exception $e) {
-            \Log::warning('No se pudo enviar notificación de ingreso: ' . $e->getMessage());
-        }
+            $validator = Validator::make($request->all(), [
+                'usuario_id' => 'required|integer|exists:usuarios,id',
+                'equipos_o_elementos_id' => 'required|integer|exists:equipos_o_elementos,id',
+            ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Ingreso registrado correctamente',
-            'data' => $historial->load(['usuario', 'equipo'])
-        ], 201);
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation errors',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $historial = Historial::create([
+                'usuario_id' => $request->usuario_id,
+                'equipos_o_elementos_id' => $request->equipos_o_elementos_id,
+                'ingreso' => now(),
+            ]);
+
+            // Enviar notificación de ingreso de equipo
+            try {
+                $equipo = $historial->equipo;
+                $notificationController = new NotificationController();
+                $notificationController->sendPushNotification(
+                    $request->usuario_id,
+                    'Entrada Registrada',
+                    "Ingreso registrado: {$equipo->tipo_elemento} {$equipo->marca}",
+                    [
+                        'type' => 'entry_registered',
+                        'historial_id' => $historial->id,
+                        'equipment_id' => $equipo->id,
+                        'timestamp' => now()->toIso8601String(),
+                        'navigate_to' => 'historial',
+                    ]
+                );
+            } catch (\Exception $e) {
+                \Log::warning('No se pudo enviar notificación de ingreso: ' . $e->getMessage());
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Ingreso registrado correctamente',
+                'data' => $historial->load(['usuario', 'equipo'])
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to register ingreso',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -181,46 +269,54 @@ class HistorialController
      */
     public function registrarSalida(string $id)
     {
-        $historial = Historial::find($id);
-
-        if (!$historial) {
-            return response()->json(['success' => false, 'message' => 'Historial no encontrado'], 404);
-        }
-
-        if ($historial->salida) {
-            return response()->json([
-                'success' => false, 
-                'message' => 'Ya se registró una salida para este historial'
-            ], 400);
-        }
-
-        $historial->update(['salida' => now()]);
-
-        // Enviar notificación de salida de equipo
         try {
-            $equipo = $historial->equipo;
-            $notificationController = new NotificationController();
-            $notificationController->sendPushNotification(
-                $historial->usuario_id,
-                'Salida Registrada',
-                "Salida registrada: {$equipo->tipo_elemento} {$equipo->marca}",
-                [
-                    'type' => 'exit_registered',
-                    'historial_id' => $historial->id,
-                    'equipment_id' => $equipo->id,
-                    'timestamp' => now()->toIso8601String(),
-                    'navigate_to' => 'historial',
-                ]
-            );
-        } catch (\Exception $e) {
-            \Log::warning('No se pudo enviar notificación de salida: ' . $e->getMessage());
-        }
+            $historial = Historial::find($id);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Salida registrada correctamente',
-            'data' => $historial->fresh()->load(['usuario', 'equipo'])
-        ], 200);
+            if (!$historial) {
+                return response()->json(['success' => false, 'message' => 'Historial no encontrado'], 404);
+            }
+
+            if ($historial->salida) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Ya se registró una salida para este historial'
+                ], 400);
+            }
+
+            $historial->update(['salida' => now()]);
+
+            // Enviar notificación de salida de equipo
+            try {
+                $equipo = $historial->equipo;
+                $notificationController = new NotificationController();
+                $notificationController->sendPushNotification(
+                    $historial->usuario_id,
+                    'Salida Registrada',
+                    "Salida registrada: {$equipo->tipo_elemento} {$equipo->marca}",
+                    [
+                        'type' => 'exit_registered',
+                        'historial_id' => $historial->id,
+                        'equipment_id' => $equipo->id,
+                        'timestamp' => now()->toIso8601String(),
+                        'navigate_to' => 'historial',
+                    ]
+                );
+            } catch (\Exception $e) {
+                \Log::warning('No se pudo enviar notificación de salida: ' . $e->getMessage());
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Salida registrada correctamente',
+                'data' => $historial->fresh()->load(['usuario', 'equipo'])
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to register salida',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -228,54 +324,81 @@ class HistorialController
      */
     public function getByAuthUser()
     {
-        $user = auth()->user();
-        
-        $historiales = Historial::with(['equipo.elementosAdicionales'])
-            ->where('usuario_id', $user->id)
-            ->orderBy('ingreso', 'desc')
-            ->get()
-            ->map(function ($historial) {
-                return [
-                    'id' => $historial->id,
-                    'ingreso' => $historial->ingreso,
-                    'salida' => $historial->salida,
-                    'equipo' => $historial->equipo
-                ];
-            });
+        try {
+            $user = auth()->user();
 
-        return response()->json([
-            'success' => true, 
-            'data' => $historiales
-        ], 200);
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Usuario no autenticado'
+                ], 401);
+            }
+
+            $historiales = Historial::with(['equipo.elementosAdicionales'])
+                ->where('usuario_id', $user->id)
+                ->orderBy('ingreso', 'desc')
+                ->get()
+                ->map(function ($historial) {
+                    return [
+                        'id' => $historial->id,
+                        'ingreso' => $historial->ingreso,
+                        'salida' => $historial->salida,
+                        'equipo' => $historial->equipo
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'data' => $historiales
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve historial for user',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
     
     public function registerEntrance(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'usuario_id' => 'required|integer|exists:usuarios,id',
-            'equipos_o_elementos_id' => 'required|integer|exists:equipos_o_elementos,id',
-            'datetime' => 'required|date',
-        ]);
+        try {
+            $validator = Validator::make($request->all(), [
+                'usuario_id' => 'required|integer|exists:usuarios,id',
+                'equipos_o_elementos_id' => 'required|integer|exists:equipos_o_elementos,id',
+                'datetime' => 'required|date',
+            ]);
 
-        if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->errors()], 400);
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation errors',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            if (Carbon::parse($request->datetime)->isFuture()) {
+                return response()->json(['success' => false, 'message' => 'La fecha de entrada no puede ser futura'], 400);
+            }
+
+            $historial = Historial::create([
+                'usuario_id' => $request->usuario_id,
+                'equipos_o_elementos_id' => $request->equipos_o_elementos_id,
+                'ingreso' => $request->datetime,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Entrada registrada correctamente',
+                'data' => $historial->load(['usuario', 'equipo'])
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to register entrance',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        if (Carbon::parse($request->datetime)->isFuture()) {
-            return response()->json(['success' => false, 'message' => 'La fecha de entrada no puede ser futura'], 400);
-        }
-
-        $historial = Historial::create([
-            'usuario_id' => $request->usuario_id,
-            'equipos_o_elementos_id' => $request->equipos_o_elementos_id,
-            'ingreso' => $request->datetime,
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Entrada registrada correctamente',
-            'data' => $historial->load(['usuario', 'equipo'])
-        ], 201);
     }
 }
  

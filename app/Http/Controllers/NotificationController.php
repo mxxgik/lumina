@@ -15,30 +15,46 @@ class NotificationController extends Controller
      */
     public function registerToken(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'token' => 'required|string',
-            'device_id' => 'required|string',
-            'platform' => 'required|in:ios,android',
-        ]);
+        try {
+            $validator = Validator::make($request->all(), [
+                'token' => 'required|string',
+                'device_id' => 'required|string',
+                'platform' => 'required|in:ios,android',
+            ]);
 
-        if ($validator->fails()) {
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation errors',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $user = $request->user();
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Usuario no autenticado'
+                ], 401);
+            }
+
+            $user->update([
+                'push_token' => $request->token,
+                'device_id' => $request->device_id,
+                'platform' => $request->platform,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Push token registrado correctamente'
+            ]);
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()
-            ], 400);
+                'message' => 'Failed to register push token',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $user = $request->user();
-        $user->update([
-            'push_token' => $request->token,
-            'device_id' => $request->device_id,
-            'platform' => $request->platform,
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Push token registrado correctamente'
-        ]);
     }
 
     /**
@@ -46,16 +62,31 @@ class NotificationController extends Controller
      */
     public function index(Request $request)
     {
-        $user = $request->user();
-        
-        $notifications = Notification::where('usuario_id', $user->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        try {
+            $user = $request->user();
 
-        return response()->json([
-            'success' => true,
-            'data' => $notifications
-        ]);
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Usuario no autenticado'
+                ], 401);
+            }
+
+            $notifications = Notification::where('usuario_id', $user->id)
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $notifications
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve notifications',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -63,29 +94,44 @@ class NotificationController extends Controller
      */
     public function markAsRead(Request $request, $id)
     {
-        $user = $request->user();
-        
-        $notification = Notification::where('id', $id)
-            ->where('usuario_id', $user->id)
-            ->first();
+        try {
+            $user = $request->user();
 
-        if (!$notification) {
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Usuario no autenticado'
+                ], 401);
+            }
+
+            $notification = Notification::where('id', $id)
+                ->where('usuario_id', $user->id)
+                ->first();
+
+            if (!$notification) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Notificación no encontrada'
+                ], 404);
+            }
+
+            $notification->update([
+                'is_read' => true,
+                'read_at' => now()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Notificación marcada como leída',
+                'data' => $notification
+            ]);
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Notificación no encontrada'
-            ], 404);
+                'message' => 'Failed to mark notification as read',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $notification->update([
-            'is_read' => true,
-            'read_at' => now()
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Notificación marcada como leída',
-            'data' => $notification
-        ]);
     }
 
     /**
@@ -93,19 +139,34 @@ class NotificationController extends Controller
      */
     public function markAllAsRead(Request $request)
     {
-        $user = $request->user();
-        
-        Notification::where('usuario_id', $user->id)
-            ->where('is_read', false)
-            ->update([
-                'is_read' => true,
-                'read_at' => now()
-            ]);
+        try {
+            $user = $request->user();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Todas las notificaciones marcadas como leídas'
-        ]);
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Usuario no autenticado'
+                ], 401);
+            }
+
+            Notification::where('usuario_id', $user->id)
+                ->where('is_read', false)
+                ->update([
+                    'is_read' => true,
+                    'read_at' => now()
+                ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Todas las notificaciones marcadas como leídas'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to mark all notifications as read',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -113,25 +174,40 @@ class NotificationController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $user = $request->user();
-        
-        $notification = Notification::where('id', $id)
-            ->where('usuario_id', $user->id)
-            ->first();
+        try {
+            $user = $request->user();
 
-        if (!$notification) {
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Usuario no autenticado'
+                ], 401);
+            }
+
+            $notification = Notification::where('id', $id)
+                ->where('usuario_id', $user->id)
+                ->first();
+
+            if (!$notification) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Notificación no encontrada'
+                ], 404);
+            }
+
+            $notification->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Notificación eliminada correctamente'
+            ]);
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Notificación no encontrada'
-            ], 404);
+                'message' => 'Failed to delete notification',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $notification->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Notificación eliminada correctamente'
-        ]);
     }
 
     /**

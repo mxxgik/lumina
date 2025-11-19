@@ -13,8 +13,16 @@ class NivelFormacionController
      */
     public function index()
     {
-        $nivelesFormacion = NivelFormacion::all();
-        return response()->json(['success' => true, 'data' => $nivelesFormacion], 200);
+        try {
+            $nivelesFormacion = NivelFormacion::all();
+            return response()->json(['success' => true, 'data' => $nivelesFormacion], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve niveles de formacion',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -22,17 +30,29 @@ class NivelFormacionController
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'nivel_formacion' => 'required|string|max:100',
-        ]);
+        try {
+            $validator = Validator::make($request->all(), [
+                'nivel_formacion' => 'required|string|max:100',
+            ]);
 
-        if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->errors()], 400);
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation errors',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $nivelFormacion = NivelFormacion::create($validator->validated());
+
+            return response()->json(['success' => true, 'data' => $nivelFormacion], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create nivel de formacion',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $nivelFormacion = NivelFormacion::create($validator->validated());
-
-        return response()->json(['success' => true, 'data' => $nivelFormacion], 201);
     }
 
     /**
@@ -40,13 +60,21 @@ class NivelFormacionController
      */
     public function show(string $id)
     {
-        $nivelFormacion = NivelFormacion::with(['formaciones'])->find($id);
+        try {
+            $nivelFormacion = NivelFormacion::with(['formaciones'])->find($id);
 
-        if (!$nivelFormacion) {
-            return response()->json(['success' => false, 'message' => 'Nivel de formación no encontrado'], 404);
+            if (!$nivelFormacion) {
+                return response()->json(['success' => false, 'message' => 'Nivel de formación no encontrado'], 404);
+            }
+
+            return response()->json(['success' => true, 'data' => $nivelFormacion], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve nivel de formacion',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        return response()->json(['success' => true, 'data' => $nivelFormacion], 200);
     }
 
     /**
@@ -54,23 +82,35 @@ class NivelFormacionController
      */
     public function update(Request $request, string $id)
     {
-        $nivelFormacion = NivelFormacion::find($id);
+        try {
+            $nivelFormacion = NivelFormacion::find($id);
 
-        if (!$nivelFormacion) {
-            return response()->json(['success' => false, 'message' => 'Nivel de formación no encontrado'], 404);
+            if (!$nivelFormacion) {
+                return response()->json(['success' => false, 'message' => 'Nivel de formación no encontrado'], 404);
+            }
+
+            $validator = Validator::make($request->all(), [
+                'nivel_formacion' => 'sometimes|string|max:100',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation errors',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $nivelFormacion->update($validator->validated());
+
+            return response()->json(['success' => true, 'data' => $nivelFormacion], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update nivel de formacion',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $validator = Validator::make($request->all(), [
-            'nivel_formacion' => 'sometimes|string|max:100',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->errors()], 400);
-        }
-
-        $nivelFormacion->update($validator->validated());
-
-        return response()->json(['success' => true, 'data' => $nivelFormacion], 200);
     }
 
     /**
@@ -78,17 +118,25 @@ class NivelFormacionController
      */
     public function destroy(string $id)
     {
-        $nivelFormacion = NivelFormacion::find($id);
+        try {
+            $nivelFormacion = NivelFormacion::find($id);
 
-        if (!$nivelFormacion) {
-            return response()->json(['success' => false, 'message' => 'Nivel de formación no encontrado'], 404);
+            if (!$nivelFormacion) {
+                return response()->json(['success' => false, 'message' => 'Nivel de formación no encontrado'], 404);
+            }
+
+            $nivelFormacion->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'El nivel de formación con id: ' . $id . ' fue eliminado correctamente'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete nivel de formacion',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $nivelFormacion->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'El nivel de formación con id: ' . $id . ' fue eliminado correctamente'
-        ], 200);
     }
 }
