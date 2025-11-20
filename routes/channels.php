@@ -19,6 +19,5 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 
 Broadcast::channel('historial-updates', function ($user) {
     // Allow only admin and portero roles
-    #return in_array($user->role->nombre_rol, ['admin', 'portero']);
-    return true;
+    return in_array($user->role->nombre_rol, ['admin', 'portero']);
 });
