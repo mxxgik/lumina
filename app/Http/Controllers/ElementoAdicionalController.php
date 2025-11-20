@@ -26,9 +26,9 @@ class ElementoAdicionalController
     {
         try {
             $validator = Validator::make($request->all(), [
-                'nombre' => 'required|string|max:255',
-                'descripcion' => 'nullable|string',
-                'path_foto' => 'nullable|string',
+                'nombre_elemento' => 'required|string|max:255',
+                'path_foto_elemento' => 'required|string',
+                'equipos_o_elementos_id' => 'required|integer|exists:equipos_o_elementos,id',
             ]);
 
             if ($validator->fails()) {
@@ -80,9 +80,9 @@ class ElementoAdicionalController
             }
 
             $validator = Validator::make($request->all(), [
-                'nombre' => 'sometimes|string|max:255',
-                'descripcion' => 'nullable|string',
-                'path_foto' => 'nullable|string',
+                'nombre_elemento' => 'sometimes|string|max:255',
+                'path_foto_elemento' => 'sometimes|string',
+                'equipos_o_elementos_id' => 'sometimes|integer|exists:equipos_o_elementos,id',
             ]);
 
             if ($validator->fails()) {

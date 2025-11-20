@@ -26,12 +26,13 @@ class EquipoOElementoController
     {
         try {
             $validator = Validator::make($request->all(), [
-                'nombre' => 'required|string|max:255',
+                'sn_equipo' => 'required|string|max:255',
+                'marca' => 'nullable|string|max:255',
+                'color' => 'nullable|string|max:255',
+                'tipo_elemento' => 'required|string|max:255',
                 'descripcion' => 'nullable|string',
-                'placa' => 'nullable|string|max:255',
-                'serial' => 'nullable|string|max:255',
-                'estado' => 'required|string|in:disponible,en_prestamo,de_baja,en_reparacion',
-                'path_foto' => 'nullable|string',
+                'qr_hash' => 'required|string|max:255|unique:equipos_o_elementos,qr_hash',
+                'path_foto_equipo_implemento' => 'required|string',
             ]);
 
             if ($validator->fails()) {
@@ -83,12 +84,13 @@ class EquipoOElementoController
             }
 
             $validator = Validator::make($request->all(), [
-                'nombre' => 'sometimes|string|max:255',
+                'sn_equipo' => 'sometimes|string|max:255',
+                'marca' => 'nullable|string|max:255',
+                'color' => 'nullable|string|max:255',
+                'tipo_elemento' => 'sometimes|string|max:255',
                 'descripcion' => 'nullable|string',
-                'placa' => 'nullable|string|max:255',
-                'serial' => 'nullable|string|max:255',
-                'estado' => 'sometimes|string|in:disponible,en_prestamo,de_baja,en_reparacion',
-                'path_foto' => 'nullable|string',
+                'qr_hash' => 'sometimes|string|max:255|unique:equipos_o_elementos,qr_hash,' . $id,
+                'path_foto_equipo_implemento' => 'sometimes|string',
             ]);
 
             if ($validator->fails()) {
