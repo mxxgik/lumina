@@ -64,4 +64,19 @@ return [
 
     ],
 
+   /*
+   |--------------------------------------------------------------------------
+   | Broadcast Authentication
+   |--------------------------------------------------------------------------
+   |
+   | This option defines the authentication guard used for broadcasting
+   | authentication. By default, it uses the 'web' guard, but for API
+   | applications using Sanctum, you should set it to 'sanctum'.
+   |
+   */
+
+   'auth' => [
+       'guard' => 'sanctum',
+   ],
+
 ];
