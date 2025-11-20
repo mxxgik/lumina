@@ -43,7 +43,7 @@ class HistorialUpdated implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('historial-updates'),
+            new Channel('historial-updates'),
         ];
     }
 
