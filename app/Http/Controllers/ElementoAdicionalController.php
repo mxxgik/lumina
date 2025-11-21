@@ -39,6 +39,9 @@ class ElementoAdicionalController
                 ], 422);
             }
 
+            // Fix PostgreSQL sequence if needed
+            \DB::statement("SELECT setval('elementos_adicionales_id_seq', (SELECT MAX(id) FROM elementos_adicionales))");
+
             $elemento = ElementoAdicional::create($validator->validated());
 
             return response()->json(['success' => true, 'data' => $elemento], 201);

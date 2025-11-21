@@ -43,6 +43,9 @@ class EquipoOElementoController
                 ], 422);
             }
 
+            // Fix PostgreSQL sequence if needed
+            \DB::statement("SELECT setval('equipos_o_elementos_id_seq', (SELECT MAX(id) FROM equipos_o_elementos))");
+
             $equipo = EquipoOElemento::create($validator->validated());
 
             return response()->json(['success' => true, 'data' => $equipo], 201);
