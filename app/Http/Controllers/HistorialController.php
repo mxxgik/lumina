@@ -48,6 +48,9 @@ class HistorialController
                 ], 422);
             }
 
+            // Fix PostgreSQL sequence if needed
+            \DB::statement("SELECT setval('historial_id_seq', (SELECT MAX(id) FROM historial))");
+
             $historial = Historial::create($validator->validated());
 
             // Broadcast the updated historial list
