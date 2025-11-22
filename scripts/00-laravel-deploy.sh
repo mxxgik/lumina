@@ -12,5 +12,5 @@ php artisan route:cache
 
 echo "Running migrations..."
 php artisan migrate:fresh --force --seed
-touch /var/html/db.log
-chmod -R 777 /var/html/db.log
+touch /var/www/html/db.log
+chmod -R 777 /var/www/html/db.log
