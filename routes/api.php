@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ElementoAdicionalController;
+use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\EquipoOElementoController;
 use App\Http\Controllers\FormacionController;
 use App\Http\Controllers\HistorialController;
@@ -135,4 +136,13 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('/{id}', [NotificationController::class, 'destroy']);
         });
     });
+});
+
+// ============================================
+// PASSWORD RECOVERY ROUTES (PUBLIC)
+// ============================================
+Route::prefix('password')->group(function () {
+    Route::post('/forgot', [PasswordResetController::class, 'sendResetCode']);
+    Route::post('/verify-code', [PasswordResetController::class, 'verifyResetCode']);
+    Route::post('/reset', [PasswordResetController::class, 'resetPassword']);
 });
