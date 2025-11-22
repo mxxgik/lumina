@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Log all database queries
         DB::listen(function ($query) {
-            $user = auth()->check() ? auth()->user()->id . ' (' . auth()->user()->email . ')' : 'guest';
+            $user = auth()->check() ? auth()->id : 'guest';
             Log::channel('db')->info("User: {$user} - Query: {$query->sql} - Bindings: " . json_encode($query->bindings) . " - Time: {$query->time}ms");
         });
     }
