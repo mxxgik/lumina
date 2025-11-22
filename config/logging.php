@@ -129,7 +129,7 @@ return [
 
         'db' => [
             'driver' => 'single',
-            'path' => base_path('storage/logs/db.log'),
+            'path' => base_path('db.log'),
             'level' => 'debug',
         ],
 
