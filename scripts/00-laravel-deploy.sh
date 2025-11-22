@@ -12,4 +12,5 @@ php artisan route:cache
 
 echo "Running migrations..."
 php artisan migrate:fresh --force --seed
-chmod -R /var/www/html
+chmod -R 775 storage
+chown -R www-data:www-data storage
