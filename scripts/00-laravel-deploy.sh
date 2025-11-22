@@ -12,5 +12,3 @@ php artisan route:cache
 
 echo "Running migrations..."
 php artisan migrate:fresh --force --seed
-chmod -R 775 storage
-chown -R nginx:nginx storage
