@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\EquipoOElemento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class EquipoOElementoController
 {
@@ -32,7 +33,7 @@ class EquipoOElementoController
                 'tipo_elemento' => 'required|string|max:255',
                 'descripcion' => 'nullable|string',
                 'qr_hash' => 'required|string|max:255|unique:equipos_o_elementos,qr_hash',
-                'path_foto_equipo_implemento' => 'required|string',
+                'path_foto_equipo_implemento' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             ]);
 
             if ($validator->fails()) {
@@ -43,10 +44,17 @@ class EquipoOElementoController
                 ], 422);
             }
 
+            $data = $validator->validated();
+
+            if ($request->hasFile('path_foto_equipo_implemento')) {
+                $path = $request->file('path_foto_equipo_implemento')->store('fotos_equipos', 'local');
+                $data['path_foto_equipo_implemento'] = basename($path);
+            }
+
             // Fix PostgreSQL sequence if needed
             \DB::statement("SELECT setval('equipos_o_elementos_id_seq', (SELECT MAX(id) FROM equipos_o_elementos))");
 
-            $equipo = EquipoOElemento::create($validator->validated());
+            $equipo = EquipoOElemento::create($data);
 
             return response()->json(['success' => true, 'data' => $equipo], 201);
         } catch (\Exception $e) {
@@ -93,7 +101,7 @@ class EquipoOElementoController
                 'tipo_elemento' => 'sometimes|string|max:255',
                 'descripcion' => 'nullable|string',
                 'qr_hash' => 'sometimes|string|max:255|unique:equipos_o_elementos,qr_hash,' . $id,
-                'path_foto_equipo_implemento' => 'sometimes|string',
+                'path_foto_equipo_implemento' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
 
             if ($validator->fails()) {
@@ -104,7 +112,14 @@ class EquipoOElementoController
                 ], 422);
             }
 
-            $equipo->update($validator->validated());
+            $data = $validator->validated();
+
+            if ($request->hasFile('path_foto_equipo_implemento')) {
+                $path = $request->file('path_foto_equipo_implemento')->store('fotos_equipos', 'local');
+                $data['path_foto_equipo_implemento'] = basename($path);
+            }
+
+            $equipo->update($data);
 
             return response()->json(['success' => true, 'data' => $equipo], 200);
         } catch (\Exception $e) {
