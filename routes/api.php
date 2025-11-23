@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ElementoAdicionalController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\EquipoOElementoController;
 use App\Http\Controllers\FormacionController;
@@ -136,6 +137,11 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('/{id}', [NotificationController::class, 'destroy']);
         });
     });
+});
+
+// IMAGE ROUTES (PROTECTED)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/images/{filename}', [ImageController::class, 'show']);
 });
 
 // ============================================
