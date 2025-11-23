@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 
 class UsuarioController
@@ -41,7 +42,7 @@ class UsuarioController
                 'documento' => 'required|string|max:50',
                 'edad' => 'nullable|integer|min:1|max:120',
                 'numero_telefono' => 'nullable|string|max:20',
-                'path_foto' => 'nullable|string',
+                'path_foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
                 'email' => 'required|email|unique:usuarios,email',
                 'password' => 'required|string|min:8',
             ]);
@@ -55,6 +56,12 @@ class UsuarioController
             }
 
             $data = $validator->validated();
+
+            if ($request->hasFile('path_foto')) {
+                $path = $request->file('path_foto')->store('fotos', 'local');
+                $data['path_foto'] = basename($path);
+            }
+
             $data['password'] = Hash::make($data['password']);
 
             $usuario = User::create($data);
@@ -115,7 +122,7 @@ class UsuarioController
                 'documento' => 'sometimes|string|max:50',
                 'edad' => 'nullable|integer|min:1|max:120',
                 'numero_telefono' => 'nullable|string|max:20',
-                'path_foto' => 'nullable|string',
+                'path_foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'email' => 'sometimes|email|unique:usuarios,email,' . $id,
                 'password' => 'sometimes|string|min:8',
             ]);
@@ -129,6 +136,11 @@ class UsuarioController
             }
 
             $data = $validator->validated();
+
+            if ($request->hasFile('path_foto')) {
+                $path = $request->file('path_foto')->store('fotos', 'local');
+                $data['path_foto'] = basename($path);
+            }
 
             if (isset($data['password'])) {
                 $data['password'] = Hash::make($data['password']);
