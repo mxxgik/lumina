@@ -117,7 +117,6 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function ()
         Route::apiResource('formaciones', FormacionController::class);
         Route::apiResource('historial', HistorialController::class);
         Route::apiResource('tipos-programa', NivelFormacionController::class);
-        Route::apiResource('aprendices-equipos', EquipoOElementoController::class);
     });
 });
 
