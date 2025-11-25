@@ -12,7 +12,7 @@ class EquipoOElementoController
     public function index()
     {
         try {
-            $equipos = EquipoOElemento::all();
+            $equipos = EquipoOElemento::with('usuarios')->get();
             return response()->json(['success' => true, 'data' => $equipos], 200);
         } catch (\Exception $e) {
             return response()->json([
