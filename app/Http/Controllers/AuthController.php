@@ -108,23 +108,6 @@ class AuthController
             $user = Auth::user();
             $token = $user->createToken('auth_token')->plainTextToken;
 
-            // Enviar notificación de inicio de sesión
-            try {
-                $notificationController = new NotificationController();
-                $notificationController->sendPushNotification(
-                    $user->id,
-                    '👋 Bienvenido',
-                    "Hola {$user->nombre}, has iniciado sesión correctamente",
-                    [
-                        'type' => 'login',
-                        'timestamp' => now()->toIso8601String(),
-                        'navigate_to' => 'home',
-                    ]
-                );
-            } catch (\Exception $e) {
-                // Si falla el envío de notificación, no afecta el login
-                \Log::warning('No se pudo enviar notificación de login: ' . $e->getMessage());
-            }
 
             return response()->json([
                 'success' => true,
@@ -237,22 +220,6 @@ class AuthController
         try {
             $user = $request->user();
             
-            // Enviar notificación antes de cerrar sesión
-            try {
-                $notificationController = new NotificationController();
-                $notificationController->sendPushNotification(
-                    $user->id,
-                    '👋 Sesión Cerrada',
-                    "Has cerrado sesión correctamente. ¡Hasta pronto {$user->nombre}!",
-                    [
-                        'type' => 'logout',
-                        'timestamp' => now()->toIso8601String(),
-                        'navigate_to' => 'login',
-                    ]
-                );
-            } catch (\Exception $e) {
-                \Log::warning('No se pudo enviar notificación de logout: ' . $e->getMessage());
-            }
             
             $request->user()->currentAccessToken()->delete();
 

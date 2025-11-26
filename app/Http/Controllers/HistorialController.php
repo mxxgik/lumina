@@ -246,25 +246,6 @@ class HistorialController
             // Broadcast the updated historial list
             broadcast(new HistorialUpdated())->toOthers();
 
-            // Enviar notificación de ingreso de equipo
-            try {
-                $equipo = $historial->equipo;
-                $notificationController = new NotificationController();
-                $notificationController->sendPushNotification(
-                    $request->usuario_id,
-                    'Entrada Registrada',
-                    "Ingreso registrado: {$equipo->tipo_elemento} {$equipo->marca}",
-                    [
-                        'type' => 'entry_registered',
-                        'historial_id' => $historial->id,
-                        'equipment_id' => $equipo->id,
-                        'timestamp' => now()->toIso8601String(),
-                        'navigate_to' => 'historial',
-                    ]
-                );
-            } catch (\Exception $e) {
-                \Log::warning('No se pudo enviar notificación de ingreso: ' . $e->getMessage());
-            }
 
             return response()->json([
                 'success' => true,
@@ -304,25 +285,6 @@ class HistorialController
             // Broadcast the updated historial list
             broadcast(new HistorialUpdated())->toOthers();
 
-            // Enviar notificación de salida de equipo
-            try {
-                $equipo = $historial->equipo;
-                $notificationController = new NotificationController();
-                $notificationController->sendPushNotification(
-                    $historial->usuario_id,
-                    'Salida Registrada',
-                    "Salida registrada: {$equipo->tipo_elemento} {$equipo->marca}",
-                    [
-                        'type' => 'exit_registered',
-                        'historial_id' => $historial->id,
-                        'equipment_id' => $equipo->id,
-                        'timestamp' => now()->toIso8601String(),
-                        'navigate_to' => 'historial',
-                    ]
-                );
-            } catch (\Exception $e) {
-                \Log::warning('No se pudo enviar notificación de salida: ' . $e->getMessage());
-            }
 
             return response()->json([
                 'success' => true,
