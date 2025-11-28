@@ -33,6 +33,12 @@ class UsuarioController
     public function store(Request $request)
     {
         try {
+            $data = $request->all();
+            if (isset($data['formacion_id']) && $data['formacion_id'] === "null") {
+                $data['formacion_id'] = null;
+            }
+            $request->merge($data);
+
             $validator = Validator::make($request->all(), [
                 'role_id' => 'required|exists:roles,id',
                 'formacion_id' => 'nullable|exists:formacion,id',
@@ -112,6 +118,12 @@ class UsuarioController
             if (!$usuario) {
                 return response()->json(['success' => false, 'message' => 'Usuario no encontrado'], 404);
             }
+
+            $data = $request->all();
+            if (isset($data['formacion_id']) && $data['formacion_id'] === "null") {
+                $data['formacion_id'] = null;
+            }
+            $request->merge($data);
 
             $validator = Validator::make($request->all(), [
                 'role_id' => 'sometimes|exists:roles,id',
