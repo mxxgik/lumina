@@ -47,7 +47,7 @@ class EquipoOElementoController
             $data = $validator->validated();
 
             if ($request->hasFile('path_foto_equipo_implemento')) {
-                $path = $request->file('path_foto_equipo_implemento')->store('fotos_equipos', 'local');
+                $path = $request->file('path_foto_equipo_implemento')->store('fotos_equipos', 'public');
                 $data['path_foto_equipo_implemento'] = basename($path);
             }
 
@@ -115,7 +115,7 @@ class EquipoOElementoController
             $data = $validator->validated();
 
             if ($request->hasFile('path_foto_equipo_implemento')) {
-                $path = $request->file('path_foto_equipo_implemento')->store('fotos_equipos', 'local');
+                $path = $request->file('path_foto_equipo_implemento')->store('fotos_equipos', 'public');
                 $data['path_foto_equipo_implemento'] = basename($path);
             }
 

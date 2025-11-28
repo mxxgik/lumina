@@ -64,7 +64,7 @@ class UsuarioController
             $data = $validator->validated();
 
             if ($request->hasFile('path_foto')) {
-                $path = $request->file('path_foto')->store('fotos', 'local');
+                $path = $request->file('path_foto')->store('fotos', 'public');
                 $data['path_foto'] = basename($path);
             }
 
@@ -150,7 +150,7 @@ class UsuarioController
             $data = $validator->validated();
 
             if ($request->hasFile('path_foto')) {
-                $path = $request->file('path_foto')->store('fotos', 'local');
+                $path = $request->file('path_foto')->store('fotos', 'public');
                 $data['path_foto'] = basename($path);
             }
 
