@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\EquipoOElemento;
+use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -32,7 +33,6 @@ class EquipoOElementoController
                 'color' => 'nullable|string|max:255',
                 'tipo_elemento' => 'required|string|max:255',
                 'descripcion' => 'nullable|string',
-                'qr_hash' => 'required|string|max:255|unique:equipos_o_elementos,qr_hash',
                 'path_foto_equipo_implemento' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             ]);
 
@@ -45,6 +45,8 @@ class EquipoOElementoController
             }
 
             $data = $validator->validated();
+
+            $data['qr_hash'] = hash('sha256', $data['sn_equipo'] . ($data['color'] ?? ''));
 
             if ($request->hasFile('path_foto_equipo_implemento')) {
                 $path = $request->file('path_foto_equipo_implemento')->store('fotos_equipos', 'public');
@@ -100,7 +102,6 @@ class EquipoOElementoController
                 'color' => 'nullable|string|max:255',
                 'tipo_elemento' => 'sometimes|string|max:255',
                 'descripcion' => 'nullable|string',
-                'qr_hash' => 'sometimes|string|max:255|unique:equipos_o_elementos,qr_hash,' . $id,
                 'path_foto_equipo_implemento' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
 
@@ -113,6 +114,10 @@ class EquipoOElementoController
             }
 
             $data = $validator->validated();
+
+            $sn = isset($data['sn_equipo']) ? $data['sn_equipo'] : $equipo->sn_equipo;
+            $col = isset($data['color']) ? $data['color'] : $equipo->color;
+            $data['qr_hash'] = hash('sha256', $sn . ($col ?? ''));
 
             if ($request->hasFile('path_foto_equipo_implemento')) {
                 $path = $request->file('path_foto_equipo_implemento')->store('fotos_equipos', 'public');
