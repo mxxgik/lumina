@@ -19,6 +19,12 @@ class AuthController
     public function register(Request $request): JsonResponse
     {
         try {
+            $data = $request->all();
+            if (isset($data['formacion_id']) && $data['formacion_id'] === "null") {
+                $data['formacion_id'] = null;
+            }
+            $request->merge($data);
+
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email|unique:usuarios,email',
                 'password' => 'required|min:8',
@@ -160,6 +166,12 @@ class AuthController
     {
         try {
             $user = $request->user();
+
+            $data = $request->all();
+            if (isset($data['formacion_id']) && $data['formacion_id'] === "null") {
+                $data['formacion_id'] = null;
+            }
+            $request->merge($data);
 
             $validator = Validator::make($request->all(), [
                 'email' => 'sometimes|email|unique:usuarios,email,' . $user->id,
