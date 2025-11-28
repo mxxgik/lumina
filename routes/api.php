@@ -119,10 +119,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function ()
     });
 });
 
-// IMAGE ROUTES (PROTECTED)
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/images/{filename}', [ImageController::class, 'show']);
-});
+Route::get('/images/{filename}', [ImageController::class, 'show']);
 
 // ============================================
 // PASSWORD RECOVERY ROUTES (PUBLIC)
