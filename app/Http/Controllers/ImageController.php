@@ -30,7 +30,7 @@ class ImageController extends Controller
         }
 
         if (!Storage::disk('public')->exists($path)) {
-            return response()->json(['error' => 'Image not found'], 404);
+            return response()->json(['error' => 'Image not found inside of public path'], 404);
         }
 
         return Storage::disk('public')->response($path);
