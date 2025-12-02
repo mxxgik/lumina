@@ -71,7 +71,7 @@ class EquipoOElementoController
     public function show(string $id)
     {
         try {
-            $equipo = EquipoOElemento::find($id);
+            $equipo = EquipoOElemento::with('usuarios')->find($id);
 
             if (!$equipo) {
                 return response()->json(['success' => false, 'message' => 'Equipo o elemento no encontrado'], 404);
