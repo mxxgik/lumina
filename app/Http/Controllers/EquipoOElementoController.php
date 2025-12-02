@@ -28,6 +28,7 @@ class EquipoOElementoController
     {
         try {
             $validator = Validator::make($request->all(), [
+                'id_usuario' => 'required|array|max:255|exists:usuarios,id',
                 'sn_equipo' => 'required|string|max:255',
                 'marca' => 'nullable|string|max:255',
                 'color' => 'nullable|string|max:255',
@@ -46,6 +47,9 @@ class EquipoOElementoController
 
             $data = $validator->validated();
 
+            $idUsuarios = array_unique($data['id_usuario']);
+            unset($data['id_usuario']);
+
             $data['qr_hash'] = hash('sha256', $data['sn_equipo'] . ($data['color'] ?? ''));
 
             if ($request->hasFile('path_foto_equipo_implemento')) {
@@ -57,6 +61,8 @@ class EquipoOElementoController
             \DB::statement("SELECT setval('equipos_o_elementos_id_seq', (SELECT MAX(id) FROM equipos_o_elementos))");
 
             $equipo = EquipoOElemento::create($data);
+
+            $equipo->usuarios()->attach($idUsuarios);
 
             return response()->json(['success' => true, 'data' => $equipo], 201);
         } catch (\Exception $e) {
@@ -97,6 +103,7 @@ class EquipoOElementoController
             }
 
             $validator = Validator::make($request->all(), [
+                'id_usuario' => 'sometimes|array|exists:usuarios,id',
                 'sn_equipo' => 'sometimes|string|max:255',
                 'marca' => 'nullable|string|max:255',
                 'color' => 'nullable|string|max:255',
@@ -115,6 +122,12 @@ class EquipoOElementoController
 
             $data = $validator->validated();
 
+            $idUsuarios = null;
+            if (isset($data['id_usuario'])) {
+                $idUsuarios = array_unique($data['id_usuario']);
+                unset($data['id_usuario']);
+            }
+
             $sn = isset($data['sn_equipo']) ? $data['sn_equipo'] : $equipo->sn_equipo;
             $col = isset($data['color']) ? $data['color'] : $equipo->color;
             $data['qr_hash'] = hash('sha256', $sn . ($col ?? ''));
@@ -125,6 +138,10 @@ class EquipoOElementoController
             }
 
             $equipo->update($data);
+
+            if ($idUsuarios !== null) {
+                $equipo->usuarios()->sync($idUsuarios);
+            }
 
             return response()->json(['success' => true, 'data' => $equipo], 200);
         } catch (\Exception $e) {
