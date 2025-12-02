@@ -34,5 +34,6 @@ class ImageController extends Controller
         }
 
         #return Storage::disk('public')->response($path, 200);
+        return Storage::disk('public')->response($path, 200);
     }
 }
