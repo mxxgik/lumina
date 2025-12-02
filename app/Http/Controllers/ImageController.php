@@ -33,6 +33,6 @@ class ImageController extends Controller
             return response()->json(['error' => 'Image not found inside of public path'], 404);
         }
 
-        return Storage::disk('public')->response($path);
+        #return Storage::disk('public')->response($path, 200);
     }
 }
