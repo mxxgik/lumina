@@ -27,7 +27,6 @@ class ElementoAdicionalController
         try {
             $validator = Validator::make($request->all(), [
                 'nombre_elemento' => 'required|string|max:255',
-                'path_foto_elemento' => 'required|string',
                 'equipos_o_elementos_id' => 'required|integer|exists:equipos_o_elementos,id',
             ]);
 
@@ -84,7 +83,6 @@ class ElementoAdicionalController
 
             $validator = Validator::make($request->all(), [
                 'nombre_elemento' => 'sometimes|string|max:255',
-                'path_foto_elemento' => 'sometimes|string',
                 'equipos_o_elementos_id' => 'sometimes|integer|exists:equipos_o_elementos,id',
             ]);
 
