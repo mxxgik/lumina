@@ -12,6 +12,7 @@ use App\Http\Controllers\HistorialController;
 use App\Http\Controllers\NivelFormacionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\UsuarioEquipoController;
 
 //Authentication related routes
 Route::prefix('auth')->group(function ()
@@ -75,6 +76,10 @@ Route::middleware(['auth:sanctum', 'role:portero'])->group(function ()
             Route::get("/{id}", [EquipoOElementoController::class, "show"]);
         });
 
+        Route::prefix('usuario-equipos')->group(function () {
+            Route::get("/", [UsuarioEquipoController::class, "index"]);
+        });
+
     });
 });
 
@@ -116,6 +121,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function ()
         Route::apiResource('formaciones', FormacionController::class);
         Route::apiResource('historial', HistorialController::class);
         Route::apiResource('tipos-programa', NivelFormacionController::class);
+        Route::apiResource('usuario-equipos', UsuarioEquipoController::class);
     });
 });
 
