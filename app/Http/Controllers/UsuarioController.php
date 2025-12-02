@@ -134,7 +134,7 @@ class UsuarioController
                 'documento' => 'sometimes|string|max:50',
                 'edad' => 'nullable|integer|min:1|max:120',
                 'numero_telefono' => 'nullable|string|max:20',
-                'path_foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'path_foto' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'email' => 'sometimes|email|unique:usuarios,email,' . $id,
                 'password' => 'sometimes|string|min:8',
             ]);
