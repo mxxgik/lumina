@@ -26,13 +26,13 @@ class ImageController extends Controller
         }
 
         if (!$path) {
-            return response()->json(['error' => 'Image not found'], 200);
+            return response()->json(['error' => 'Image not found'], 404);
         }
 
         if (!Storage::disk('public')->exists($path)) {
-            return response()->json(['error' => 'Image not found inside of public path'], 200);
+            return response()->json(['error' => 'Image not found inside of public path'], 404);
         }
 
-        return Storage::disk('public')->response($path);
+        return Storage::disk('public')->response($path)->json(200);
     }
 }
