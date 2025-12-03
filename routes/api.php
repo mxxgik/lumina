@@ -61,7 +61,7 @@ Route::middleware(['auth:sanctum', 'role:portero'])->group(function ()
 
             //Recieves userId and equipoId, in case of exit, check for entrance date and time field
             //if null or greater than current date send error, set exit date and time to current
-            Route::post("/", [HistorialController::class, "registerEntrance"]);
+            Route::post("/", [HistorialController::class, "registerEntranceOrExit"]);
         });
 
         // TipoPrograma routes (read-only)
