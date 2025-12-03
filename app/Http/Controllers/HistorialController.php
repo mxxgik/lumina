@@ -48,9 +48,6 @@ class HistorialController
                 ], 422);
             }
 
-            // Fix PostgreSQL sequence if needed
-            \DB::statement("SELECT setval('historial_id_seq', (SELECT MAX(id) FROM historial))");
-
             $historial = Historial::create($validator->validated());
 
             // Broadcast the updated historial list
@@ -341,7 +338,7 @@ class HistorialController
         }
     }
     
-    public function registerEntrance(Request $request)
+    public function registerEntranceOrExit(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -362,20 +359,40 @@ class HistorialController
                 return response()->json(['success' => false, 'message' => 'La fecha de entrada no puede ser futura'], 400);
             }
 
-            $historial = Historial::create([
-                'usuario_id' => $request->usuario_id,
-                'equipos_o_elementos_id' => $request->equipos_o_elementos_id,
-                'ingreso' => $request->datetime,
-            ]);
+            // Check if there's an open entrance for this equipo
+            $existing = Historial::where('equipos_o_elementos_id', $request->equipos_o_elementos_id)
+                ->whereNull('salida')
+                ->first();
 
-            // Broadcast the updated historial list
-            broadcast(new HistorialUpdated())->toOthers();
+            if ($existing) {
+                // Register exit
+                $existing->update(['salida' => $request->datetime]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Entrada registrada correctamente',
-                'data' => $historial->load(['usuario', 'equipo'])
-            ], 201);
+                // Broadcast the updated historial list
+                broadcast(new HistorialUpdated())->toOthers();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Salida registrada correctamente',
+                    'data' => $existing->fresh()->load(['usuario', 'equipo'])
+                ], 200);
+            } else {
+                // Register entrance
+                $historial = Historial::create([
+                    'usuario_id' => $request->usuario_id,
+                    'equipos_o_elementos_id' => $request->equipos_o_elementos_id,
+                    'ingreso' => $request->datetime,
+                ]);
+
+                // Broadcast the updated historial list
+                broadcast(new HistorialUpdated())->toOthers();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Entrada registrada correctamente',
+                    'data' => $historial->load(['usuario', 'equipo'])
+                ], 201);
+            }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
