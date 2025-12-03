@@ -125,7 +125,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function ()
     });
 });
 
-Route::get('/images/{filename}', [ImageController::class, 'show'])->where('filename', '.*');
+Route::get('/images/{filename}', [ImageController::class, 'show']);
 
 // ============================================
 // PASSWORD RECOVERY ROUTES (PUBLIC)
