@@ -14,8 +14,6 @@ return new class extends Migration
         Schema::create('elementos_adicionales', function (Blueprint $table) {
             $table->id();
             $table->string('nombre_elemento', 100)->nullable();
-            $table->text('path_foto_elemento')->nullable();
-            $table->foreignId('equipos_o_elementos_id')->constrained('equipos_o_elementos')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

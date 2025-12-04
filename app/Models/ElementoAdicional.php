@@ -19,8 +19,6 @@ class ElementoAdicional extends Model
      */
     protected $fillable = [
         'nombre_elemento',
-        'path_foto_elemento',
-        'equipos_o_elementos_id',
     ];
 
     /**
@@ -29,10 +27,10 @@ class ElementoAdicional extends Model
     public $timestamps = false;
 
     /**
-     * Get the equipo that owns the elemento adicional.
+     * The equipos o elementos that belong to this elemento adicional.
      */
-    public function equipo()
+    public function equipos()
     {
-        return $this->belongsTo(EquipoOElemento::class, 'equipos_o_elementos_id');
+        return $this->belongsToMany(EquipoOElemento::class, 'equipo_elemento_adicional', 'elementos_adicionales_id', 'equipos_o_elementos_id');
     }
 }

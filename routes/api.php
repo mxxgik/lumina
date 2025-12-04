@@ -122,6 +122,9 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function ()
         Route::apiResource('historial', HistorialController::class);
         Route::apiResource('tipos-programa', NivelFormacionController::class);
         Route::apiResource('usuario-equipos', UsuarioEquipoController::class);
+            // Rutas para asignar y quitar elementos adicionales a equipos
+            Route::post('equipos-elementos/asignar-elementos', [\App\Http\Controllers\EquipoElementoAdicionalController::class, 'assign']);
+            Route::post('equipos-elementos/quitar-elementos', [\App\Http\Controllers\EquipoElementoAdicionalController::class, 'detach']);
     });
 });
 

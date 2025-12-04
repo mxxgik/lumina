@@ -27,7 +27,6 @@ class ElementoAdicionalController
         try {
             $validator = Validator::make($request->all(), [
                 'nombre_elemento' => 'required|string|max:255',
-                'equipos_o_elementos_id' => 'required|integer|exists:equipos_o_elementos,id',
             ]);
 
             if ($validator->fails()) {
@@ -83,7 +82,6 @@ class ElementoAdicionalController
 
             $validator = Validator::make($request->all(), [
                 'nombre_elemento' => 'sometimes|string|max:255',
-                'equipos_o_elementos_id' => 'sometimes|integer|exists:equipos_o_elementos,id',
             ]);
 
             if ($validator->fails()) {

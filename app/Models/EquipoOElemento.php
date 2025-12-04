@@ -49,10 +49,10 @@ class EquipoOElemento extends Model
     }
 
     /**
-     * Get the elementos adicionales for the equipo.
+     * The elementos adicionales that belong to this equipo o elemento.
      */
     public function elementosAdicionales()
     {
-        return $this->hasMany(ElementoAdicional::class, 'equipos_o_elementos_id');
+        return $this->belongsToMany(ElementoAdicional::class, 'equipo_elemento_adicional', 'equipos_o_elementos_id', 'elementos_adicionales_id');
     }
 }
