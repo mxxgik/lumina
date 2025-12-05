@@ -2,7 +2,7 @@
 
 <p align="center"><a target="_blank"><img src="lumina-logo.png" width="400" alt="Lumina Logo"></a></p>
 
-## Descripcion General
+## ¿Que es Lumina?
 
 Lumina es una API REST basada en Laravel diseñada para gestionar equipos, usuarios, programas de formación y control de acceso en un entorno educativo o de formación. El sistema soporta control de acceso basado en roles con tres roles principales: admin, portero (portero/guardia) y usuario (usuario/aprendiz).
 
@@ -333,6 +333,25 @@ Obtiene un aprendiz por numero de identificacion.
 - GET `/api/portero/equipos-elementos`
 - GET `/api/portero/equipos-elementos/{id}`
 - POST `/api/portero/equipos-elementos` (Se Obtiene por el hash QR)
+
+**Cuerpo de la Peticion:**
+```json
+{
+  "hash": "qr_hash_value"
+}
+```
+
+**Respuesta (200):**
+```json
+{
+  "success": true,
+  "data": {...}
+}
+```
+
+- GET `/api/portero/aprendices-equipos`
+- GET `/api/portero/aprendices-equipos/{id}`
+- GET `/api/portero/usuario-equipos`
 
 #### Rutas para Formaciones y Tipos de Programa (Solo Lectura para Portero)
 
