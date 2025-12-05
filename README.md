@@ -82,7 +82,7 @@ Logout del Usuario.
 ### Recuperacion de Contraseña (Publico)
 
 #### POST /api/password/forgot
-Envia un codigo para resetear la contraseña al correo.
+Envía un código para resetear la contraseña al correo.
 
 **Cuerpo de la Peticion:**
 ```json
@@ -142,7 +142,7 @@ Resetea la contraseña usando el token de reseteo.
 }
 ```
 
-### Routas para Admin (Requiere rol de 'admin')
+### Rutas para Admin (Requiere rol de 'admin')
 
 #### POST /api/admin/register
 Registra un nuevo Usuario (Especifico para Admin).
@@ -160,7 +160,7 @@ Registra un nuevo Usuario (Especifico para Admin).
   "documento": "123456789",
   "edad": 25,
   "numero_telefono": "+1234567890",
-  "path_foto": "file_upload"
+  "path_foto": "file (image)"
 }
 ```
 
@@ -188,12 +188,117 @@ Todas las operaciones estandar CRUD para los siguientes recursos:
 - **Historial**: `/api/admin/historial`
 - **Niveles de Formación**: `/api/admin/tipos-programa`
 
-Cada reurso soporta:
+Cada recurso soporta:
 - GET `/` - Listar todos
 - POST `/` - Crear nuevo
 - GET `/{id}` - Mostrar especifico
 - PUT/PATCH `/{id}` - Actualizar especifico
 - DELETE `/{id}` - Eliminar especifico
+
+##### Crear Usuario (POST /api/admin/users)
+**Cuerpo de la Peticion:**
+```json
+{
+  "email": "user@example.com",
+  "password": "password123",
+  "role_id": 1,
+  "formacion_id": 1,
+  "nombre": "John",
+  "apellido": "Doe",
+  "tipo_documento": "CC",
+  "documento": "123456789",
+  "edad": 25,
+  "numero_telefono": "+1234567890",
+  "path_foto": "file (image)"
+}
+```
+
+##### Crear Equipo/Elemento (POST /api/admin/equipos-elementos)
+**Cuerpo de la Peticion:**
+```json
+{
+  "sn_equipo": "SN123456",
+  "tipo_elemento": "Computador",
+  "marca": "Dell",
+  "color": "Negro",
+  "descripcion": "Computador portatil",
+  "path_foto_equipo_implemento": "file (image)"
+}
+```
+
+##### Crear Formación (POST /api/admin/formaciones)
+**Cuerpo de la Peticion:**
+```json
+{
+  "nivel_formacion_id": 1,
+  "ficha": "123456",
+  "nombre_programa": "Tecnico en Sistemas",
+  "fecha_inicio_programa": "2024-01-15",
+  "fecha_fin_programa": "2024-12-15"
+}
+```
+
+##### Crear Elemento Adicional (POST /api/admin/elementos-adicionales)
+**Cuerpo de la Peticion:**
+```json
+{
+  "nombre_elemento": "Mouse",
+  "equipos_o_elementos_id": 1
+}
+```
+
+##### Crear Nivel de Formación (POST /api/admin/tipos-programa)
+**Cuerpo de la Peticion:**
+```json
+{
+  "nivel_formacion": "Tecnico"
+}
+```
+
+##### Crear Historial (POST /api/admin/historial)
+**Cuerpo de la Peticion:**
+```json
+{
+  "usuario_id": 1,
+  "equipos_o_elementos_id": 1,
+  "ingreso": "2024-01-15 08:00:00",
+  "salida": "2024-01-15 17:00:00"
+}
+```
+
+##### Crear Usuario-Equipo (POST /api/admin/usuario-equipos)
+**Cuerpo de la Peticion:**
+```json
+{
+  "usuario_id": 1,
+  "equipos_o_elementos_id": 1
+}
+```
+
+##### Asignaciones de Elementos Adicionales
+
+- GET `/api/admin/equipos-elementos/asignaciones` - Listar todas las asignaciones
+- GET `/api/admin/equipos-elementos/asignaciones/{equipoId}` - Obtener asignaciones de un equipo específico
+- POST `/api/admin/equipos-elementos/asignar-elementos` - Asignar elementos adicionales a un equipo
+- POST `/api/admin/equipos-elementos/quitar-elementos` - Quitar elementos adicionales de un equipo
+
+**Asignar Elementos Adicionales (POST /api/admin/equipos-elementos/asignar-elementos)**
+**Cuerpo de la Peticion:**
+```json
+{
+  "equipos_o_elementos_id": 1,
+  "elementos_adicionales_ids": [1, 2, 3]
+}
+```
+
+**Quitar Elementos Adicionales (POST /api/admin/equipos-elementos/quitar-elementos)**
+**Cuerpo de la Peticion:**
+```json
+{
+  "equipos_o_elementos_id": 1,
+  "elementos_adicionales_ids": [1, 2]
+}
+```
 
 ### Rutas para Portero (Requiere rol de 'portero')
 
@@ -227,7 +332,7 @@ Obtiene un aprendiz por numero de identificacion.
 - GET `/api/portero/elementos-adicionales/{id}`
 - GET `/api/portero/equipos-elementos`
 - GET `/api/portero/equipos-elementos/{id}`
-- POST `/api/portero/equipos-elementos` (Se Obtiene por el sha256)
+- POST `/api/portero/equipos-elementos` (Se Obtiene por el hash QR)
 
 #### Rutas para Formaciones y Tipos de Programa (Solo Lectura para Portero)
 
@@ -240,15 +345,14 @@ Obtiene un aprendiz por numero de identificacion.
 
 - GET `/api/portero/historial`
 - GET `/api/portero/historial/{id}`
-- POST `/api/portero/historial` (Registrar una Entrada)
+- POST `/api/portero/historial` (Registrar Entrada o Salida)
 
-**Request para Registrar una Entrada:**
+**Request para Registrar Entrada o Salida:**
 ```json
 {
   "usuario_id": 1,
   "equipos_o_elementos_id": 1,
-  "ingreso": "2023-10-01 08:00:00",
-  "salida": "2023-10-01 08:00:00" //(Este Campo es Opcional al registrar una entrada)
+  "datetime": "2023-10-01 08:00:00"
 }
 ```
 
@@ -360,7 +464,7 @@ Gestiona el historial de entrada/salida de equipos.
 - `registrarIngreso(Request $request)`: Registrar entrada de equipo
 - `registrarSalida($id)`: Registrar salida de equipo
 - `getByAuthUser()`: Obtener historial para el usuario autenticado
-- `registerEntrance(Request $request)`: Registrar entrada con fecha y hora
+- `registerEntranceOrExit(Request $request)`: Registrar entrada o salida de equipo
 
 ### NivelFormacionController
 
@@ -394,6 +498,16 @@ Gestiona roles de usuario.
 - `show($id)`: Obtener rol por ID
 - `update(Request $request, $id)`: Actualizar rol
 - `destroy($id)`: Eliminar rol
+
+### EquipoElementoAdicionalController
+
+Gestiona asignaciones de elementos adicionales a equipos.
+
+**Métodos:**
+- `index()`: Obtener todas las asignaciones de elementos adicionales a equipos
+- `show($equipoId)`: Obtener elementos adicionales de un equipo específico
+- `assign(Request $request)`: Asignar elementos adicionales a un equipo
+- `detach(Request $request)`: Quitar elementos adicionales de un equipo
 
 ### PasswordResetController
 
@@ -502,5 +616,70 @@ All endpoints return JSON responses with the following structure:
 
 - **Transmisión**: Actualizaciones en tiempo real para cambios en el historial
 - **Transmisión de Eventos**: Evento HistorialUpdated para actualizaciones en vivo
+
+## Guía de Despliegue
+
+### Prerrequisitos
+
+- PHP 8.1 o superior
+- Composer
+- PostgreSQL
+- Node.js y npm (para assets frontend si aplica)
+
+### Despliegue con Docker
+
+1. Construir la imagen Docker:
+
+```bash
+docker build -t lumina .
+```
+
+2. Ejecutar el contenedor:
+
+```bash
+docker run -p 8000:80 lumina
+```
+
+Asegúrate de configurar las variables de entorno en un archivo .env montado en el contenedor.
+
+### Despliegue Manual
+
+1. Instalar dependencias de PHP:
+
+```bash
+composer install --no-dev --optimize-autoloader
+```
+
+2. Configurar el entorno:
+
+Copia `.env.example` a `.env` y configura las variables necesarias (base de datos, APP_KEY, etc.).
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+3. Configurar la base de datos:
+
+Asegúrate de que PostgreSQL esté corriendo y configura las credenciales en `.env`.
+
+4. Ejecutar migraciones y seeders:
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+5. Servir la aplicación:
+
+Para desarrollo:
+```bash
+php artisan serve
+```
+
+Para producción, configura un servidor web como Nginx o Apache apuntando a `public/index.php`.
+
+### Script de Despliegue
+
+El proyecto incluye un script de despliegue en `scripts/00-laravel-deploy.sh` que automatiza la instalación de dependencias, cacheo y migraciones.
 
 Esta documentación proporciona una visión general completa de la API Lumina. Para detalles de implementación, consulte los métodos de controlador y las relaciones de modelo.
