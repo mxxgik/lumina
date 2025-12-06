@@ -636,14 +636,11 @@ Si bien Lumina se puede desplegar de manera manual, se recomienda el uso de Dock
 ```bash
 docker build -t lumina .
 ```
+2. Ejecuta la base de datos
+Asegúrate de que PostgreSQL esté corriendo y configura recuerda las credenciales del usuario y url de conexion.
 
-2. Ejecutar el contenedor:
-
-```bash 
-docker run -p 8000:80 lumina
-```
-
-Asegúrate de configurar las variables de entorno en un archivo .env montado en el contenedor:
+3. Configurar las variables de entorno
+En un archivo .env montado en el contenedor configura las siguientes variables de entorno:
 
 ```bash
 APP_KEY=llave de aplicacion para cifrado y descifrado de informacion
@@ -655,6 +652,12 @@ PUSHER_APP_ID=Id de la aplicacion de Pusher
 PUSHER_APP_KEY=Llave de la aplicacion de Pusher
 PUSHER_APP_SECRET=Secreto de la aplicacion de Pusher
 QUEUE_CONNECTION=Manera en la que se maneja la cola de eventos, recomendado usar sync
+```
+
+5. Ejecutar el contenedor:
+
+```bash 
+docker run --env-file /path/to/.env -p 8000:80 lumina
 ```
 
 ### Despliegue Manual
@@ -692,4 +695,4 @@ Para producción, configura un servidor web con Nginx usando la configuracion en
 
 El proyecto incluye un script de despliegue en `scripts/00-laravel-deploy.sh` que automatiza la instalación de dependencias, cacheo y migraciones.
 
-Esta documentación proporciona una visión general completa de la API Lumina. Para detalles de implementación, consulte los métodos de controlador y las relaciones de modelo.
+En caso de cualquier duda o inquietud no dude en revisar el codigo fuente o comunicarse [conmigo](https://github.com/mxxgik) o con [David Ortiz](https://github.com/DavidOrtiz27)
