@@ -145,7 +145,7 @@ Resetea la contraseña usando el token de reseteo.
 ### Rutas para Admin (Requiere rol de 'admin')
 
 #### POST /api/admin/register
-Registra un nuevo Usuario (Especifico para Admin).
+Registra un nuevo Usuario.
 
 **Cuerpo de la Peticion:**
 ```json
@@ -181,7 +181,7 @@ Registra un nuevo Usuario (Especifico para Admin).
 
 Todas las operaciones estandar CRUD para los siguientes recursos:
 
-- **Usuarios**: `/api/admin/users`
+- **Usuarios**: `/api/admin/users` (a excepcion del los otros endpoints, este no soporta POST, el endpoint de registro/creacion de usuarios es `/api/admin/register`)
 - **Elementos Adicionales**: `/api/admin/elementos-adicionales`
 - **Equipos/Elementos**: `/api/admin/equipos-elementos`
 - **Formaciones**: `/api/admin/formaciones`
@@ -195,23 +195,6 @@ Cada recurso soporta:
 - PUT/PATCH `/{id}` - Actualizar especifico
 - DELETE `/{id}` - Eliminar especifico
 
-##### Crear Usuario (POST /api/admin/users)
-**Cuerpo de la Peticion:**
-```json
-{
-  "email": "user@example.com",
-  "password": "password123",
-  "role_id": 1,
-  "formacion_id": 1,
-  "nombre": "John",
-  "apellido": "Doe",
-  "tipo_documento": "CC",
-  "documento": "123456789",
-  "edad": 25,
-  "numero_telefono": "+1234567890",
-  "path_foto": "file (image)"
-}
-```
 
 ##### Crear Equipo/Elemento (POST /api/admin/equipos-elementos)
 **Cuerpo de la Peticion:**
