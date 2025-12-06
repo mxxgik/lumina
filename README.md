@@ -642,7 +642,7 @@ Asegúrate de que PostgreSQL esté corriendo y configura y recuerda las credenci
 3. Configurar las variables de entorno
 En un archivo .env montado en el contenedor configura las siguientes variables de entorno:
 
-```bash
+```shell
 APP_KEY=llave de aplicación para cifrado y descifrado de información
 BROADCAST_CONNECTION=Backend para transmisión de eventos, por defecto se usa Pusher
 DB_CONNECTION=Base de datos a usar, por defecto se usa PostgreSQL
