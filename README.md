@@ -628,7 +628,8 @@ All endpoints return JSON responses with the following structure:
 - PostgreSQL
 - Node.js y npm (para assets frontend si aplica)
 
-### Despliegue con Docker
+### Despliegue con Docker (Recomendado)
+Si bien Lumina se puede desplegar de manera manual, se recomienda el uso de Docker para facilitar el despliegue y garantizar la consistencia del entorno.
 
 1. Construir la imagen Docker:
 
@@ -638,11 +639,23 @@ docker build -t lumina .
 
 2. Ejecutar el contenedor:
 
-```bash
+```bash 
 docker run -p 8000:80 lumina
 ```
 
-Asegúrate de configurar las variables de entorno en un archivo .env montado en el contenedor.
+Asegúrate de configurar las variables de entorno en un archivo .env montado en el contenedor:
+
+```env
+APP_KEY=(llave de aplicacion para cifrado y descifrado de informacion)
+BROADCAST_CONNECTION=(Backend para transmision de eventos, por defecto se usa Pusher)
+DB_CONNECTION=Base de datos a usar (por defecto se usa PostgreSQL)
+DB_URL=Url para coneccion con la base de datos
+PUSHER_APP_CLUSTER=Cluster de la aplicacion de Pusher
+PUSHER_APP_ID=Id de la aplicacion de Pusher
+PUSHER_APP_KEY=Llave de la aplicacion de Pusher
+PUSHER_APP_SECRET=Secreto de la aplicacion de Pusher
+QUEUE_CONNECTION=Manera en la que se maneja la cola de eventos, recomendado usar sync
+```
 
 ### Despliegue Manual
 
