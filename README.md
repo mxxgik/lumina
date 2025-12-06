@@ -645,10 +645,10 @@ docker run -p 8000:80 lumina
 
 Asegúrate de configurar las variables de entorno en un archivo .env montado en el contenedor:
 
-```env
-APP_KEY=(llave de aplicacion para cifrado y descifrado de informacion)
-BROADCAST_CONNECTION=(Backend para transmision de eventos, por defecto se usa Pusher)
-DB_CONNECTION=Base de datos a usar (por defecto se usa PostgreSQL)
+```bash
+APP_KEY=llave de aplicacion para cifrado y descifrado de informacion
+BROADCAST_CONNECTION=Backend para transmision de eventos, por defecto se usa Pusher
+DB_CONNECTION=Base de datos a usar, por defecto se usa PostgreSQL
 DB_URL=Url para coneccion con la base de datos
 PUSHER_APP_CLUSTER=Cluster de la aplicacion de Pusher
 PUSHER_APP_ID=Id de la aplicacion de Pusher
@@ -667,16 +667,11 @@ composer install --no-dev --optimize-autoloader
 
 2. Configurar el entorno:
 
-Copia `.env.example` a `.env` y configura las variables necesarias (base de datos, APP_KEY, etc.).
+Configura las variables de entorno mencionadas en el apartado anterior
 
-```bash
-cp .env.example .env
-php artisan key:generate
-```
+3. Ejecuta la base de datos
 
-3. Configurar la base de datos:
-
-Asegúrate de que PostgreSQL esté corriendo y configura las credenciales en `.env`.
+Asegúrate de que PostgreSQL esté corriendo y configura las credenciales en ```.env```.
 
 4. Ejecutar migraciones y seeders:
 
@@ -691,7 +686,7 @@ Para desarrollo:
 php artisan serve
 ```
 
-Para producción, configura un servidor web como Nginx o Apache apuntando a `public/index.php`.
+Para producción, configura un servidor web con Nginx usando la configuracion en `conf/nginx/nginx-site.conf`.
 
 ### Script de Despliegue
 
