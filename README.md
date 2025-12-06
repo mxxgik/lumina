@@ -2,18 +2,18 @@
 
 <p align="center"><a target="_blank"><img src="lumina-logo.png" width="400" alt="Lumina Logo"></a></p>
 
-## ¿Que es Lumina?
+## ¿Qué es Lumina?
 
 Lumina es una API REST basada en Laravel diseñada para gestionar equipos, usuarios, programas de formación y control de acceso en un entorno educativo o de formación. El sistema soporta control de acceso basado en roles con tres roles principales: admin, portero (portero/guardia) y usuario (usuario/aprendiz).
 
-### Caracteristicas
+### Características
 
-- **Manejo de Usuarios**: Registro, autenticacion, manejo de perfiles.
-- **Manejo de Equipos**: Seguimiento de equipos y elementos con codigos QR.
+- **Manejo de Usuarios**: Registro, autenticación, manejo de perfiles.
+- **Manejo de Equipos**: Seguimiento de equipos y elementos con códigos QR.
 - **Manejo de Formaciones**: Manejo de formaciones y sus niveles.
 - **Control de Acceso**: Permisos basados en roles y registro de entrada/salida de equipos.
-- **Manejo de Imagenes**: Almacenamiento y acceso seguro de imagenes.
-- **Recuperacion de Contraseña (Aplicacion Mobil)**: Recuperacion de contraseña basada en correo electronico.
+- **Manejo de Imágenes**: Almacenamiento y acceso seguro de imágenes.
+- **Recuperación de Contraseña (Aplicación Móvil)**: Recuperación de contraseña basada en correo electrónico.
 
 ### Tech Stack
 
@@ -25,20 +25,20 @@ Lumina es una API REST basada en Laravel diseñada para gestionar equipos, usuar
 
 ## Autenticación
 
-La API utiliza Laravel Sanctum para la autenticacion. Todos los endpoints protegidos requieren un Bearer Token en el Authorization header.
+La API utiliza Laravel Sanctum para la autenticación. Todos los endpoints protegidos requieren un Bearer Token en el Authorization header.
 
 ### Roles y Permisos
 
 1. **Admin**: Acceso completo a todos los endpoints .
-2. **Portero**: Acceso de solo lectura a la mayoria de los datos, puede registrar entradas/salidas de equipos.
-3. **Usuario**: Acceso unicamente a sus propios datos y equipos asignados.
+2. **Portero**: Acceso de solo lectura a la mayoría de los datos, puede registrar entradas/salidas de equipos.
+3. **Usuario**: Acceso únicamente a sus propios datos y equipos asignados.
 
 ## Endpoints de la API
 
-### Rutas de Autenticacion
+### Rutas de Autenticación
 
 #### POST /api/auth/login (Publica)
-Login del usuario, retorna token de acceso e informacion del usuario.
+Login del usuario, retorna token de acceso e información del usuario.
 
 **Cuerpo de la Peticion:**
 ```json
@@ -68,7 +68,7 @@ Login del usuario, retorna token de acceso e informacion del usuario.
 }
 ```
 
-#### POST /api/auth/logout (Requiere Autenticacion)
+#### POST /api/auth/logout (Requiere Autenticación)
 Logout del Usuario.
 
 **Respuesta (200):**
@@ -79,7 +79,7 @@ Logout del Usuario.
 }
 ```
 
-### Recuperacion de Contraseña (Publico)
+### Recuperación de Contraseña (Público)
 
 #### POST /api/password/forgot
 Envía un código para resetear la contraseña al correo.
@@ -100,7 +100,7 @@ Envía un código para resetear la contraseña al correo.
 ```
 
 #### POST /api/password/verify-code
-Verifica el codigo de recuperacion y retorna un token de reseteo.
+Verifica el código de recuperación y retorna un token de reseteo.
 
 **Cuerpo de la Peticion:**
 ```json
@@ -179,9 +179,9 @@ Registra un nuevo Usuario.
 
 #### Rutas generales para Admin
 
-Todas las operaciones estandar CRUD para los siguientes recursos:
+Todas las operaciones estándar CRUD para los siguientes recursos:
 
-- **Usuarios**: `/api/admin/users` (a excepcion del los otros endpoints, este no soporta POST, el endpoint de registro/creacion de usuarios es `/api/admin/register`)
+- **Usuarios**: `/api/admin/users` (a excepción del los otros endpoints, este no soporta POST, el endpoint de registro/creación de usuarios es `/api/admin/register`)
 - **Elementos Adicionales**: `/api/admin/elementos-adicionales`
 - **Equipos/Elementos**: `/api/admin/equipos-elementos`
 - **Formaciones**: `/api/admin/formaciones`
@@ -191,26 +191,26 @@ Todas las operaciones estandar CRUD para los siguientes recursos:
 Cada recurso soporta:
 - GET `/` - Listar todos
 - POST `/` - Crear nuevo
-- GET `/{id}` - Mostrar especifico
-- PUT/PATCH `/{id}` - Actualizar especifico
-- DELETE `/{id}` - Eliminar especifico
+- GET `/{id}` - Mostrar específico
+- PUT/PATCH `/{id}` - Actualizar específico
+- DELETE `/{id}` - Eliminar específico
 
 
 ##### Crear Equipo/Elemento (POST /api/admin/equipos-elementos)
-**Cuerpo de la Peticion:**
+**Cuerpo de la Petición:**
 ```json
 {
   "sn_equipo": "SN123456",
   "tipo_elemento": "Computador",
   "marca": "Dell",
   "color": "Negro",
-  "descripcion": "Computador portatil",
+  "descripcion": "Computador portátil",
   "path_foto_equipo_implemento": "file (image)"
 }
 ```
 
 ##### Crear Formación (POST /api/admin/formaciones)
-**Cuerpo de la Peticion:**
+**Cuerpo de la Petición:**
 ```json
 {
   "nivel_formacion_id": 1,
@@ -222,7 +222,7 @@ Cada recurso soporta:
 ```
 
 ##### Crear Elemento Adicional (POST /api/admin/elementos-adicionales)
-**Cuerpo de la Peticion:**
+**Cuerpo de la Petición:**
 ```json
 {
   "nombre_elemento": "Mouse",
@@ -231,7 +231,7 @@ Cada recurso soporta:
 ```
 
 ##### Crear Nivel de Formación (POST /api/admin/tipos-programa)
-**Cuerpo de la Peticion:**
+**Cuerpo de la Petición:**
 ```json
 {
   "nivel_formacion": "Tecnico"
@@ -239,7 +239,7 @@ Cada recurso soporta:
 ```
 
 ##### Crear Historial (POST /api/admin/historial)
-**Cuerpo de la Peticion:**
+**Cuerpo de la Petición:**
 ```json
 {
   "usuario_id": 1,
@@ -250,7 +250,7 @@ Cada recurso soporta:
 ```
 
 ##### Crear Usuario-Equipo (POST /api/admin/usuario-equipos)
-**Cuerpo de la Peticion:**
+**Cuerpo de la Petición:**
 ```json
 {
   "usuario_id": 1,
@@ -266,7 +266,7 @@ Cada recurso soporta:
 - POST `/api/admin/equipos-elementos/quitar-elementos` - Quitar elementos adicionales de un equipo
 
 **Asignar Elementos Adicionales (POST /api/admin/equipos-elementos/asignar-elementos)**
-**Cuerpo de la Peticion:**
+**Cuerpo de la Petición:**
 ```json
 {
   "equipos_o_elementos_id": 1,
@@ -275,7 +275,7 @@ Cada recurso soporta:
 ```
 
 **Quitar Elementos Adicionales (POST /api/admin/equipos-elementos/quitar-elementos)**
-**Cuerpo de la Peticion:**
+**Cuerpo de la Petición:**
 ```json
 {
   "equipos_o_elementos_id": 1,
@@ -297,12 +297,12 @@ Lista todos los aprendices (usuarios con rol 'aprendiz').
 ```
 
 #### GET /api/portero/aprendices/{id}
-Obtiene un aprendiz especifico por ID.
+Obtiene un aprendiz específico por ID.
 
 #### POST /api/portero/aprendices
-Obtiene un aprendiz por numero de identificacion.
+Obtiene un aprendiz por número de identificación.
 
-**Cuerpo de la Peticion:**
+**Cuerpo de la Petición:**
 ```json
 {
   "id": 123
@@ -317,7 +317,7 @@ Obtiene un aprendiz por numero de identificacion.
 - GET `/api/portero/equipos-elementos/{id}`
 - POST `/api/portero/equipos-elementos` (Se Obtiene por el hash QR)
 
-**Cuerpo de la Peticion:**
+**Cuerpo de la Petición:**
 ```json
 {
   "hash": "qr_hash_value"
@@ -562,7 +562,7 @@ Maneja el acceso seguro a imágenes.
 
 ## Manejo de Errores
 
-All endpoints return JSON responses with the following structure:
+Todos los endpoints retornan respuestas en JSON con la siguiente estructura:
 
 **Respuesta Exitosa:**
 ```json
@@ -636,21 +636,21 @@ Si bien Lumina se puede desplegar de manera manual, se recomienda el uso de Dock
 ```bash
 docker build -t lumina .
 ```
-2. Ejecuta la base de datos
-Asegúrate de que PostgreSQL esté corriendo y configura recuerda las credenciales del usuario y url de conexion.
+2. Ejecutar la base de datos
+Asegúrate de que PostgreSQL esté corriendo y configura y recuerda las credenciales del usuario y URL de conexión.
 
 3. Configurar las variables de entorno
 En un archivo .env montado en el contenedor configura las siguientes variables de entorno:
 
 ```bash
-APP_KEY=llave de aplicacion para cifrado y descifrado de informacion
-BROADCAST_CONNECTION=Backend para transmision de eventos, por defecto se usa Pusher
+APP_KEY=llave de aplicación para cifrado y descifrado de información
+BROADCAST_CONNECTION=Backend para transmisión de eventos, por defecto se usa Pusher
 DB_CONNECTION=Base de datos a usar, por defecto se usa PostgreSQL
-DB_URL=Url para coneccion con la base de datos
-PUSHER_APP_CLUSTER=Cluster de la aplicacion de Pusher
-PUSHER_APP_ID=Id de la aplicacion de Pusher
-PUSHER_APP_KEY=Llave de la aplicacion de Pusher
-PUSHER_APP_SECRET=Secreto de la aplicacion de Pusher
+DB_URL=URL para conexión con la base de datos
+PUSHER_APP_CLUSTER=Cluster de la aplicación de Pusher
+PUSHER_APP_ID=ID de la aplicación de Pusher
+PUSHER_APP_KEY=Llave de la aplicación de Pusher
+PUSHER_APP_SECRET=Secreto de la aplicación de Pusher
 QUEUE_CONNECTION=Manera en la que se maneja la cola de eventos, recomendado usar sync
 ```
 
@@ -672,7 +672,7 @@ composer install --no-dev --optimize-autoloader
 
 Configura las variables de entorno mencionadas en el apartado anterior
 
-3. Ejecuta la base de datos
+3. Ejecutar la base de datos
 
 Asegúrate de que PostgreSQL esté corriendo y configura las credenciales en ```.env```.
 
@@ -689,10 +689,10 @@ Para desarrollo:
 php artisan serve
 ```
 
-Para producción, configura un servidor web con Nginx usando la configuracion en `conf/nginx/nginx-site.conf`.
+Para producción, configura un servidor web con Nginx usando la configuración en `conf/nginx/nginx-site.conf`.
 
 ### Script de Despliegue
 
 El proyecto incluye un script de despliegue en `scripts/00-laravel-deploy.sh` que automatiza la instalación de dependencias, cacheo y migraciones.
 
-En caso de cualquier duda o inquietud no dude en revisar el codigo fuente o comunicarse [conmigo](https://github.com/mxxgik) o con [David Ortiz](https://github.com/DavidOrtiz27)
+En caso de cualquier duda o inquietud no dude en revisar el código fuente o comunicarse [conmigo](https://github.com/mxxgik) o con [David Ortiz](https://github.com/DavidOrtiz27)
